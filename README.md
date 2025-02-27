@@ -94,7 +94,7 @@ git push -u origin main
 
 ## Email Collection with Resend.com
 
-This project includes integration with Resend.com for collecting email addresses from users who want to join the ATLAS early access program.
+This project includes integration with Resend.com for collecting email addresses from users who want to join the TripSpin early access program.
 
 ### Setup Instructions
 
