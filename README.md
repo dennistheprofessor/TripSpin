@@ -139,45 +139,34 @@ git push -u origin main
 
 ## Email Collection with Resend.com
 
-This project includes integration with Resend.com for collecting email addresses from users who want to join the ATLAS early access program.
+This project includes direct integration with Resend.com for collecting email addresses from users who want to join the ATLAS early access program.
 
-### Setup Instructions
+### How It Works
 
-1. **Create a Resend.com Account**
-   - Sign up at [Resend.com](https://resend.com)
-   - Create an audience for your subscribers
-   - Get your API key and audience ID
-
-2. **Configure Environment Variables**
-   - Edit the `.env` file in the project root
-   - Replace `re_YOUR_API_KEY` with your actual Resend API key
-   - Replace `your-audience-id` with your actual audience ID
-
-3. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-4. **Start the Server**
-   ```bash
-   npm start
-   ```
-
-5. **Testing the Integration**
-   - Open the website in your browser
-   - Click on the globe to show the subscription form
-   - Submit an email address
-   - Check your Resend.com dashboard to verify the contact was added
-
-### API Endpoints
-
-- `POST /api/subscribe`: Adds an email address to your Resend audience
+1. When a user submits their email through the subscription form, the application makes a direct API call to Resend.com
+2. The email is added to your Resend audience for future communications
+3. No backend server is required, making deployment simpler
 
 ### Security Notes
 
-- The backend approach keeps your Resend API key secure
-- All email submissions are validated before being sent to Resend
-- CORS is enabled to allow requests from your domain only
+- The Resend API key used is a send-only key with limited scope
+- While typically API keys should be kept server-side, this implementation uses a limited-scope key that only allows adding contacts to a specific audience
+- For production use with additional features, consider implementing a backend service
+
+### Updating the Resend Configuration
+
+If you need to update the Resend API key or audience ID:
+
+1. Edit the `RESEND_CONFIG` object in the `earth-animation.html` file:
+   ```javascript
+   const RESEND_CONFIG = {
+       apiKey: 'your_new_api_key',
+       audienceId: 'your_new_audience_id',
+       apiUrl: 'https://api.resend.com/audiences/your_new_audience_id/contacts'
+   };
+   ```
+
+2. Commit and push your changes to GitHub
 
 ## Customization
 
