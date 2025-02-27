@@ -92,6 +92,48 @@ git push -u origin main
 2. Ensure all features are working correctly
 3. Test on different devices and browsers
 
+## Email Collection with Resend.com
+
+This project includes integration with Resend.com for collecting email addresses from users who want to join the ATLAS early access program.
+
+### Setup Instructions
+
+1. **Create a Resend.com Account**
+   - Sign up at [Resend.com](https://resend.com)
+   - Create an audience for your subscribers
+   - Get your API key and audience ID
+
+2. **Configure Environment Variables**
+   - Edit the `.env` file in the project root
+   - Replace `re_YOUR_API_KEY` with your actual Resend API key
+   - Replace `your-audience-id` with your actual audience ID
+
+3. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+4. **Start the Server**
+   ```bash
+   npm start
+   ```
+
+5. **Testing the Integration**
+   - Open the website in your browser
+   - Click on the globe to show the subscription form
+   - Submit an email address
+   - Check your Resend.com dashboard to verify the contact was added
+
+### API Endpoints
+
+- `POST /api/subscribe`: Adds an email address to your Resend audience
+
+### Security Notes
+
+- The backend approach keeps your Resend API key secure
+- All email submissions are validated before being sent to Resend
+- CORS is enabled to allow requests from your domain only
+
 ## Customization
 
 ### Changing Colors
