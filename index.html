@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Animation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="animation-container">
+        <!-- Book Animation -->
+        <div id="book-container">
+            <div id="book">
+                <div class="book-cover">
+                    <svg class="cover-svg" viewBox="0 0 400 600" width="100%" height="100%">
+                        <rect x="10" y="10" width="380" height="580" fill="none" stroke="#2c3e50" stroke-width="2" />
+                        <text x="200" y="300" text-anchor="middle" font-size="36" fill="#2c3e50">Travel Guide</text>
+                        <path d="M100,400 Q200,350 300,400" fill="none" stroke="#3498db" stroke-width="2" />
+                        <circle cx="100" cy="400" r="5" fill="#e74c3c" />
+                        <circle cx="300" cy="400" r="5" fill="#e74c3c" />
+                        <path d="M50,200 Q200,100 350,200" fill="none" stroke="#3498db" stroke-width="2" />
+                    </svg>
+                </div>
+                
+                <!-- Page 1 -->
+                <div class="page" id="page1">
+                    <!-- Front side (visible when closed) -->
+                    <div class="page-front">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Europe</text>
+                            
+                            <!-- Europe continent outline -->
+                            <path class="map-path" d="M150,150 Q200,130 250,150 T350,150" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M120,180 Q170,160 220,180 T320,180" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M140,210 Q190,190 240,210 T340,210" stroke="#3498db" stroke-width="2" fill="none" />
+                            
+                            <!-- Destination markers -->
+                            <circle class="map-point" cx="170" cy="170" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="210" cy="190" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="250" cy="165" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="290" cy="185" r="6" fill="#e74c3c" />
+                            
+                            <!-- Destination labels -->
+                            <text x="170" y="155" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Paris</text>
+                            <text x="210" y="175" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Rome</text>
+                            <text x="250" y="150" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Santorini</text>
+                            <text x="290" y="170" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Barcelona</text>
+                            
+                            <!-- Featured image -->
+                            <image x="100" y="240" width="200" height="150" href="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=300&h=200&fit=crop" class="destination-image" />
+                            <text x="200" y="410" text-anchor="middle" font-size="14" fill="#2c3e50">Eiffel Tower, Paris</text>
+                            
+                            <!-- Travel tips -->
+                            <rect x="80" y="440" width="240" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="470" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">Europe Travel Tips</text>
+                            <text x="200" y="500" text-anchor="middle" font-size="12" fill="#7f8c8d">• Best time to visit: April-June, Sept-Oct</text>
+                            <text x="200" y="520" text-anchor="middle" font-size="12" fill="#7f8c8d">• Get a Eurail Pass for train travel</text>
+                            <text x="200" y="540" text-anchor="middle" font-size="12" fill="#7f8c8d">• Book museums in advance to skip lines</text>
+                        </svg>
+                    </div>
+                    <!-- Back side (visible after turning) -->
+                    <div class="page-back">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Europe Highlights</text>
+                            
+                            <!-- Destination 1 -->
+                            <rect x="50" y="100" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="130" text-anchor="middle" font-size="18" fill="#2c3e50">Eiffel Tower, Paris</text>
+                            <text x="200" y="155" text-anchor="middle" font-size="14" fill="#7f8c8d">Iconic 1,063 ft. tall tower</text>
+                            <image x="60" y="110" width="80" height="80" href="https://images.unsplash.com/photo-1543349689-9a4d426bee8e?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Destination 2 -->
+                            <rect x="50" y="240" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="270" text-anchor="middle" font-size="18" fill="#2c3e50">Colosseum, Rome</text>
+                            <text x="200" y="295" text-anchor="middle" font-size="14" fill="#7f8c8d">Ancient Roman amphitheater</text>
+                            <image x="60" y="250" width="80" height="80" href="https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Destination 3 -->
+                            <rect x="50" y="380" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="410" text-anchor="middle" font-size="18" fill="#2c3e50">Santorini, Greece</text>
+                            <text x="200" y="435" text-anchor="middle" font-size="14" fill="#7f8c8d">Stunning island with blue domes</text>
+                            <image x="60" y="390" width="80" height="80" href="https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Decorative elements -->
+                            <path d="M30,520 Q200,480 370,520" stroke="#3498db" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                            <path d="M30,550 Q200,510 370,550" stroke="#3498db" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Page 2 -->
+                <div class="page" id="page2">
+                    <!-- Front side (visible when closed) -->
+                    <div class="page-front">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Asia</text>
+                            
+                            <!-- Asia continent outline -->
+                            <path class="map-path" d="M120,150 Q200,120 280,150 T380,180" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M100,180 Q180,150 260,180 T360,210" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M130,210 Q210,180 290,210 T390,240" stroke="#3498db" stroke-width="2" fill="none" />
+                            
+                            <!-- Destination markers -->
+                            <circle class="map-point" cx="180" cy="160" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="240" cy="170" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="210" cy="190" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="270" cy="200" r="6" fill="#e74c3c" />
+                            
+                            <!-- Destination labels -->
+                            <text x="180" y="145" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Tokyo</text>
+                            <text x="240" y="155" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Kyoto</text>
+                            <text x="210" y="175" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Bali</text>
+                            <text x="270" y="185" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Singapore</text>
+                            
+                            <!-- Featured image -->
+                            <image x="100" y="240" width="200" height="150" href="https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=300&h=200&fit=crop" class="destination-image" />
+                            <text x="200" y="410" text-anchor="middle" font-size="14" fill="#2c3e50">Mount Fuji, Japan</text>
+                            
+                            <!-- Cultural elements -->
+                            <rect x="80" y="440" width="240" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="470" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">Asia Travel Tips</text>
+                            <text x="200" y="500" text-anchor="middle" font-size="12" fill="#7f8c8d">• Learn basic local phrases</text>
+                            <text x="200" y="520" text-anchor="middle" font-size="12" fill="#7f8c8d">• Respect local customs and traditions</text>
+                            <text x="200" y="540" text-anchor="middle" font-size="12" fill="#7f8c8d">• Try street food from busy vendors</text>
+                        </svg>
+                    </div>
+                    <!-- Back side (visible after turning) -->
+                    <div class="page-back">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Asia Experiences</text>
+                            
+                            <!-- Cultural experience 1 -->
+                            <rect x="50" y="100" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="130" text-anchor="middle" font-size="18" fill="#2c3e50">Cherry Blossom Season</text>
+                            <text x="200" y="155" text-anchor="middle" font-size="14" fill="#7f8c8d">Japan's magical spring tradition</text>
+                            <image x="60" y="110" width="80" height="80" href="https://images.unsplash.com/photo-1522383225653-ed111181a951?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Cultural experience 2 -->
+                            <rect x="50" y="240" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="270" text-anchor="middle" font-size="18" fill="#2c3e50">Bali Rice Terraces</text>
+                            <text x="200" y="295" text-anchor="middle" font-size="14" fill="#7f8c8d">Stunning agricultural landscapes</text>
+                            <image x="60" y="250" width="80" height="80" href="https://images.unsplash.com/photo-1531342869361-d83873ef7a29?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Cultural experience 3 -->
+                            <rect x="50" y="380" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="410" text-anchor="middle" font-size="18" fill="#2c3e50">Singapore Gardens</text>
+                            <text x="200" y="435" text-anchor="middle" font-size="14" fill="#7f8c8d">Futuristic botanical wonderland</text>
+                            <image x="60" y="390" width="80" height="80" href="https://images.unsplash.com/photo-1506351421178-63b52a2d2562?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Decorative elements -->
+                            <path d="M30,520 Q200,550 370,520" stroke="#3498db" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                            <path d="M30,550 Q200,580 370,550" stroke="#3498db" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Page 3 -->
+                <div class="page" id="page3">
+                    <!-- Front side (visible when closed) -->
+                    <div class="page-front">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Americas</text>
+                            
+                            <!-- Americas continent outline -->
+                            <path class="map-path" d="M150,140 Q200,120 250,140 T350,140" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M130,170 Q180,150 230,170 T330,170" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M160,200 Q210,180 260,200 T360,200" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M180,230 Q230,210 280,230 T380,230" stroke="#3498db" stroke-width="2" fill="none" />
+                            
+                            <!-- Destination markers -->
+                            <circle class="map-point" cx="160" cy="150" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="200" cy="180" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="240" cy="160" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="280" cy="190" r="6" fill="#e74c3c" />
+                            
+                            <!-- Destination labels -->
+                            <text x="160" y="135" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">New York</text>
+                            <text x="200" y="165" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Rio</text>
+                            <text x="240" y="145" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Machu Picchu</text>
+                            <text x="280" y="175" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Vancouver</text>
+                            
+                            <!-- Featured image -->
+                            <image x="100" y="240" width="200" height="150" href="https://images.unsplash.com/photo-1496588152823-86ff7695e68f?w=300&h=200&fit=crop" class="destination-image" />
+                            <text x="200" y="410" text-anchor="middle" font-size="14" fill="#2c3e50">New York City Skyline</text>
+                            
+                            <!-- Travel info -->
+                            <rect x="80" y="440" width="240" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="470" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">Americas Travel Tips</text>
+                            <text x="200" y="500" text-anchor="middle" font-size="12" fill="#7f8c8d">• Distances are vast - plan accordingly</text>
+                            <text x="200" y="520" text-anchor="middle" font-size="12" fill="#7f8c8d">• Check visa requirements early</text>
+                            <text x="200" y="540" text-anchor="middle" font-size="12" fill="#7f8c8d">• Tipping is expected in North America</text>
+                        </svg>
+                    </div>
+                    <!-- Back side (visible after turning) -->
+                    <div class="page-back">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Americas Adventures</text>
+                            
+                            <!-- Adventure 1 -->
+                            <rect x="50" y="100" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="130" text-anchor="middle" font-size="18" fill="#2c3e50">Grand Canyon, USA</text>
+                            <text x="200" y="155" text-anchor="middle" font-size="14" fill="#7f8c8d">Breathtaking natural wonder</text>
+                            <image x="60" y="110" width="80" height="80" href="https://images.unsplash.com/photo-1474044159687-1ee9f3a51722?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Adventure 2 -->
+                            <rect x="50" y="240" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="270" text-anchor="middle" font-size="18" fill="#2c3e50">Machu Picchu, Peru</text>
+                            <text x="200" y="295" text-anchor="middle" font-size="14" fill="#7f8c8d">Ancient Incan citadel</text>
+                            <image x="60" y="250" width="80" height="80" href="https://images.unsplash.com/photo-1526392060635-9d6019884377?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Adventure 3 -->
+                            <rect x="50" y="380" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="410" text-anchor="middle" font-size="18" fill="#2c3e50">Rio de Janeiro, Brazil</text>
+                            <text x="200" y="435" text-anchor="middle" font-size="14" fill="#7f8c8d">Vibrant city with iconic beaches</text>
+                            <image x="60" y="390" width="80" height="80" href="https://images.unsplash.com/photo-1483729558449-99ef09a8c325?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <!-- Decorative elements -->
+                            <path d="M30,520 Q200,500 370,520" stroke="#3498db" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                            <path d="M30,550 Q200,530 370,550" stroke="#3498db" stroke-width="2" fill="none" stroke-dasharray="5,5" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Page 4 -->
+                <div class="page" id="page4">
+                    <!-- Front side (visible when closed) -->
+                    <div class="page-front">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Africa & Oceania</text>
+                            
+                            <!-- Continent outlines -->
+                            <path class="map-path" d="M140,150 Q190,130 240,150 T340,150" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M160,180 Q210,160 260,180 T360,180" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M180,210 Q230,190 280,210 T380,210" stroke="#3498db" stroke-width="2" fill="none" />
+                            
+                            <!-- Destination markers -->
+                            <circle class="map-point" cx="170" cy="160" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="220" cy="180" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="270" cy="170" r="6" fill="#e74c3c" />
+                            <circle class="map-point" cx="320" cy="190" r="6" fill="#e74c3c" />
+                            
+                            <!-- Destination labels -->
+                            <text x="170" y="145" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Cape Town</text>
+                            <text x="220" y="165" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Serengeti</text>
+                            <text x="270" y="155" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Sydney</text>
+                            <text x="320" y="175" class="map-text" text-anchor="middle" font-size="12" fill="#2c3e50">Great Barrier</text>
+                            
+                            <!-- Split image layout -->
+                            <rect x="50" y="240" width="140" height="100" rx="5" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <image x="55" y="245" width="130" height="90" href="https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?w=150&h=100&fit=crop" class="destination-image" />
+                            
+                            <rect x="210" y="240" width="140" height="100" rx="5" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <image x="215" y="245" width="130" height="90" href="https://images.unsplash.com/photo-1523482580672-f109ba8cb9be?w=150&h=100&fit=crop" class="destination-image" />
+                            
+                            <text x="120" y="355" text-anchor="middle" font-size="12" fill="#2c3e50">Safari, Tanzania</text>
+                            <text x="280" y="355" text-anchor="middle" font-size="12" fill="#2c3e50">Sydney Opera House</text>
+                            
+                            <!-- Travel info -->
+                            <rect x="80" y="380" width="240" height="180" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="410" text-anchor="middle" font-size="16" font-weight="bold" fill="#2c3e50">Final Travel Notes</text>
+                            <text x="200" y="440" text-anchor="middle" font-size="12" fill="#7f8c8d">• Pack light, but bring essentials</text>
+                            <text x="200" y="460" text-anchor="middle" font-size="12" fill="#7f8c8d">• Research local customs</text>
+                            <text x="200" y="480" text-anchor="middle" font-size="12" fill="#7f8c8d">• Keep digital & physical copies of documents</text>
+                            <text x="200" y="500" text-anchor="middle" font-size="12" fill="#7f8c8d">• Learn a few phrases in local languages</text>
+                            <text x="200" y="520" text-anchor="middle" font-size="12" fill="#7f8c8d">• Stay flexible with your itinerary</text>
+                            <text x="200" y="540" text-anchor="middle" font-size="14" font-weight="bold" fill="#e74c3c">Bon Voyage!</text>
+                        </svg>
+                    </div>
+                    <!-- Back side (visible after turning) -->
+                    <div class="page-back">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="70" text-anchor="middle" font-size="28" fill="#2c3e50">Your Journey Awaits</text>
+                            
+                            <!-- World map outline -->
+                            <path d="M100,150 Q200,120 300,150" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path d="M80,180 Q180,150 280,180" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path d="M120,210 Q220,180 320,210" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path d="M100,240 Q200,210 300,240" stroke="#3498db" stroke-width="2" fill="none" />
+                            
+                            <!-- Decorative compass -->
+                            <circle cx="200" cy="320" r="80" fill="none" stroke="#3498db" stroke-width="2" />
+                            <circle cx="200" cy="320" r="75" fill="none" stroke="#3498db" stroke-width="1" stroke-dasharray="5,5" />
+                            <path d="M200,250 L200,390" stroke="#3498db" stroke-width="2" />
+                            <path d="M130,320 L270,320" stroke="#3498db" stroke-width="2" />
+                            <path d="M200,250 L190,270 L210,270 Z" fill="#e74c3c" />
+                            <text x="200" y="240" text-anchor="middle" font-size="12" fill="#2c3e50">N</text>
+                            <text x="200" y="405" text-anchor="middle" font-size="12" fill="#2c3e50">S</text>
+                            <text x="280" y="320" text-anchor="middle" font-size="12" fill="#2c3e50">E</text>
+                            <text x="120" y="320" text-anchor="middle" font-size="12" fill="#2c3e50">W</text>
+                            
+                            <!-- Final message -->
+                            <rect x="50" y="430" width="300" height="120" rx="10" fill="#f8f9fa" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="460" text-anchor="middle" font-size="18" font-weight="bold" fill="#2c3e50">Thank You For Traveling With Us</text>
+                            <text x="200" y="490" text-anchor="middle" font-size="14" fill="#7f8c8d">The world is a book, and those who do not</text>
+                            <text x="200" y="510" text-anchor="middle" font-size="14" fill="#7f8c8d">travel read only one page.</text>
+                            <text x="200" y="530" text-anchor="middle" font-size="14" font-style="italic" fill="#7f8c8d">- Saint Augustine</text>
+                        </svg>
+                    </div>
+                </div>
+                
+                <!-- Page 5 -->
+                <div class="page" id="page5">
+                    <!-- Front side (visible when closed) -->
+                    <div class="page-front">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="100" text-anchor="middle" font-size="24" fill="#2c3e50">Oceania</text>
+                            <path class="map-path" d="M120,220 Q180,180 240,220 T360,220" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M100,270 Q160,230 220,270 T340,270" stroke="#3498db" stroke-width="2" fill="none" />
+                            <path class="map-path" d="M130,320 Q190,280 250,320 T370,320" stroke="#3498db" stroke-width="2" fill="none" />
+                            <circle class="map-point" cx="170" cy="240" r="5" fill="#e74c3c" />
+                            <circle class="map-point" cx="270" cy="290" r="5" fill="#e74c3c" />
+                            <text x="170" y="220" class="map-text" fill="#2c3e50">Sydney</text>
+                            <text x="270" y="270" class="map-text" fill="#2c3e50">Auckland</text>
+                        </svg>
+                    </div>
+                    <!-- Back side (visible after turning) -->
+                    <div class="page-back">
+                        <svg class="map-svg" viewBox="0 0 400 600">
+                            <text x="200" y="100" text-anchor="middle" font-size="24" fill="#2c3e50">Oceania Highlights</text>
+                            <rect x="50" y="150" width="300" height="80" fill="none" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="190" text-anchor="middle" font-size="18" fill="#2c3e50">Sydney Opera House, Australia</text>
+                            <text x="200" y="220" text-anchor="middle" font-size="14" fill="#7f8c8d">Iconic performing arts center</text>
+                            <image x="60" y="160" width="60" height="60" href="https://images.unsplash.com/photo-1506973035872-91e8fad9978e?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <rect x="50" y="250" width="300" height="80" fill="none" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="290" text-anchor="middle" font-size="18" fill="#2c3e50">Great Barrier Reef, Australia</text>
+                            <text x="200" y="320" text-anchor="middle" font-size="14" fill="#7f8c8d">World's largest coral reef system</text>
+                            <image x="60" y="260" width="60" height="60" href="https://images.unsplash.com/photo-1559592413-7cec4d0cae2b?w=150&h=150&fit=crop" class="destination-image" />
+                            
+                            <rect x="50" y="350" width="300" height="80" fill="none" stroke="#3498db" stroke-width="2" />
+                            <text x="200" y="390" text-anchor="middle" font-size="18" fill="#2c3e50">Milford Sound, New Zealand</text>
+                            <text x="200" y="420" text-anchor="middle" font-size="14" fill="#7f8c8d">Stunning fjord in South Island</text>
+                            <image x="60" y="360" width="60" height="60" href="https://images.unsplash.com/photo-1578284808761-3a9cbe0ef14e?w=150&h=150&fit=crop" class="destination-image" />
+                        </svg>
+                    </div>
+                </div>
+                
+                <div class="book-back">
+                    <svg class="back-svg" viewBox="0 0 400 600" width="100%" height="100%">
+                        <text x="200" y="100" text-anchor="middle" font-size="28" fill="#2c3e50">Welcome to Your Journey</text>
+                        
+                        <text x="200" y="150" text-anchor="middle" font-size="16" fill="#7f8c8d">Explore the world's most amazing destinations</text>
+                        
+                        <!-- World map outline -->
+                        <path class="map-path" d="M100,250 Q200,200 300,250" stroke="#3498db" stroke-width="2" fill="none" />
+                        <path class="map-path" d="M80,280 Q180,240 280,280" stroke="#3498db" stroke-width="2" fill="none" />
+                        <path class="map-path" d="M120,310 Q220,270 320,310" stroke="#3498db" stroke-width="2" fill="none" />
+                        
+                        <!-- Featured destinations -->
+                        <rect x="70" y="350" width="120" height="100" fill="none" stroke="#3498db" stroke-width="2" />
+                        <image x="80" y="360" width="100" height="80" href="https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=150&h=150&fit=crop" class="destination-image" />
+                        
+                        <rect x="210" y="350" width="120" height="100" fill="none" stroke="#3498db" stroke-width="2" />
+                        <image x="220" y="360" width="100" height="80" href="https://images.unsplash.com/photo-1493246507139-91e8fad9978e?w=150&h=150&fit=crop" class="destination-image" />
+                        
+                        <rect x="70" y="470" width="120" height="100" fill="none" stroke="#3498db" stroke-width="2" />
+                        <image x="80" y="480" width="100" height="80" href="https://images.unsplash.com/photo-1518548419970-58e3b4079ab2?w=150&h=150&fit=crop" class="destination-image" />
+                        
+                        <rect x="210" y="470" width="120" height="100" fill="none" stroke="#3498db" stroke-width="2" />
+                        <image x="220" y="480" width="100" height="80" href="https://images.unsplash.com/photo-1528702748617-c64d49f918af?w=150&h=150&fit=crop" class="destination-image" />
+                        
+                        <text x="200" y="320" text-anchor="middle" font-size="18" fill="#2c3e50">Featured Destinations</text>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Globe Animation -->
+        <div id="globe-container">
+            <svg id="globe" viewBox="0 0 300 300">
+                <!-- Globe circle -->
+                <circle cx="150" cy="150" r="100" class="globe-circle" />
+                
+                <!-- Latitude lines -->
+                <ellipse cx="150" cy="150" rx="100" ry="30" class="lat-line" />
+                <ellipse cx="150" cy="150" rx="80" ry="24" class="lat-line" />
+                <ellipse cx="150" cy="150" rx="60" ry="18" class="lat-line" />
+                <ellipse cx="150" cy="150" rx="40" ry="12" class="lat-line" />
+                <ellipse cx="150" cy="150" rx="20" ry="6" class="lat-line" />
+                
+                <!-- Longitude lines -->
+                <path d="M150,50 C150,50 150,250 150,250" class="long-line" />
+                <path d="M50,150 C50,150 250,150 250,150" class="long-line" />
+                <path d="M76,76 C76,76 224,224 224,224" class="long-line" />
+                <path d="M76,224 C76,224 224,76 224,76" class="long-line" />
+                
+                <!-- Planes -->
+                <g class="plane plane1">
+                    <path d="M0,0 L10,5 L0,10 L2,5 Z" fill="#3498db" />
+                </g>
+                <g class="plane plane2">
+                    <path d="M0,0 L10,5 L0,10 L2,5 Z" fill="#e74c3c" />
+                </g>
+                <g class="plane plane3">
+                    <path d="M0,0 L10,5 L0,10 L2,5 Z" fill="#2ecc71" />
+                </g>
+                
+                <!-- Pins -->
+                <g class="pin pin1">
+                    <path d="M0,0 C0,-20 20,-20 20,0 C20,10 10,30 10,30 C10,30 0,10 0,0 Z" fill="#e74c3c" />
+                    <circle cx="10" cy="10" r="5" fill="#c0392b" />
+                </g>
+                <g class="pin pin2">
+                    <path d="M0,0 C0,-20 20,-20 20,0 C20,10 10,30 10,30 C10,30 0,10 0,0 Z" fill="#3498db" />
+                    <circle cx="10" cy="10" r="5" fill="#2980b9" />
+                </g>
+                
+                <!-- Connection line -->
+                <path class="connection-line" d="M0,0 C0,0 0,0 0,0" stroke="#e67e22" stroke-width="2" fill="none" />
+            </svg>
+        </div>
+
+        <!-- Travel Tiles -->
+        <div id="tiles-container">
+            <div class="tile" id="flight-tile">
+                <h3>Flights</h3>
+                <div class="tile-content">
+                    <p>JFK → LHR</p>
+                    <p>Dec 15 - Dec 22</p>
+                    <p>$750 Round Trip</p>
+                </div>
+            </div>
+            <div class="tile" id="hotel-tile">
+                <h3>Hotels</h3>
+                <div class="tile-content">
+                    <p>The Grand Hotel</p>
+                    <p>★★★★☆</p>
+                    <p>$180/night</p>
+                </div>
+            </div>
+            <div class="tile" id="restaurant-tile">
+                <h3>Restaurants</h3>
+                <div class="tile-content">
+                    <p>Le Bistro</p>
+                    <p>Italian, French</p>
+                    <p>★★★★★</p>
+                </div>
+            </div>
+            <div class="tile" id="activity-tile">
+                <h3>Activities</h3>
+                <div class="tile-content">
+                    <p>City Tour</p>
+                    <p>Museum Visit</p>
+                    <p>Boat Cruise</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sign-up Form -->
+        <div id="signup-container">
+            <h2>Be the first to try our beta</h2>
+            <form id="signup-form">
+                <input type="text" placeholder="Full Name" required>
+                <input type="email" placeholder="Email Address" required>
+                <button type="submit">Join Waitlist</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="animation.js"></script>
+</body>
+</html>

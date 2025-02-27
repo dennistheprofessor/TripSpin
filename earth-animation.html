@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Travel with Atlas the Way You Want</title>
+    <meta name="description" content="Atlas by TripSpin is the first of it's kind travel concierge. Plan your trip today!">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="travel, atlas, tripspin, vacation planning, travel concierge">
+    <meta property="og:title" content="Travel with Atlas the Way You Want">
+    <meta property="og:description" content="Atlas by TripSpin is the first of it's kind travel concierge. Plan your trip today!">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Atlas by TripSpin">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "Atlas by TripSpin",
+      "description": "Atlas by TripSpin is the first of it's kind travel concierge. Plan your trip today!",
+      "url": "https://tripspin.com",
+      "sameAs": [],
+      "potentialAction": {
+        "@type": "ReserveAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://tripspin.com"
+        },
+        "result": {
+          "@type": "Reservation",
+          "name": "Travel Planning Reservation"
+        }
+      },
+      "areaServed": "Worldwide",
+      "availableLanguage": "All"
+    }
+    </script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+            background-color: #000;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        canvas {
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            z-index: 10;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        .info-panel h1 {
+            font-size: 1.5rem;
+            margin: 0;
+            letter-spacing: 1px;
+            color: #3498db;
+        }
+        
+        .info-panel p {
+            font-size: 1rem;
+            margin: 5px 0 0 0;
+            opacity: 0.8;
+        }
+        
+        .info-text {
+            font-size: 0.9rem;
+            max-width: 300px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        .click-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, calc(50% + 200px));
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 16px;
+            text-align: center;
+            opacity: 0;
+            z-index: 100;
+            pointer-events: none;
+            visibility: hidden;
+            width: 200px; /* Fixed width to prevent text wrapping */
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            font-weight: 500;
+        }
+        
+        .click-indicator.animate {
+            visibility: visible;
+            animation: fadeInOut 2.4s infinite;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            50% { opacity: 0.75; }
+            100% { opacity: 0; }
+        }
+        
+        .pulse-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+            visibility: hidden;
+        }
+        
+        .pulse-container.animate {
+            visibility: visible;
+        }
+        
+        .pulse {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: transparent;
+            border: 2px solid rgba(52, 152, 219, 0.4);
+            box-sizing: border-box;
+            pointer-events: none;
+            opacity: 0;
+        }
+        
+        .pulse.animate {
+            animation: pulse 2.4s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0; width: 240px; height: 240px; }
+            50% { opacity: 0.2; }
+            100% { opacity: 0; width: 400px; height: 400px; }
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .info-panel {
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                width: 90%;
+            }
+            
+            .info-panel h1 {
+                font-size: 1.5rem;
+            }
+            
+            .info-panel p {
+                font-size: 1rem;
+            }
+            
+            .info-text {
+                font-size: 0.9rem;
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .location-panel {
+                bottom: 20px;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+                text-align: center;
+                width: 90%;
+                max-width: 300px;
+            }
+            
+            .location-name {
+                font-size: 1.2rem;
+                text-align: center;
+                color: #e74c3c;
+                letter-spacing: 1px;
+            }
+            
+            .location-country {
+                font-size: 0.8rem;
+                text-align: center;
+            }
+            
+            .location-info {
+                font-size: 0.7rem;
+                max-width: 100%;
+                text-align: center;
+            }
+            
+            .pulse {
+                width: 160px;
+                height: 160px;
+            }
+            
+            .click-indicator {
+                transform: translate(-50%, calc(50% + 140px));
+            }
+            
+            @keyframes pulse {
+                0% {
+                    width: 160px;
+                    height: 160px;
+                    opacity: 0;
+                }
+                50% {
+                    opacity: 0.2;
+                }
+                100% {
+                    width: 280px;
+                    height: 280px;
+                    opacity: 0;
+                }
+            }
+        }
+        
+        .location-panel {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            color: white;
+            max-width: 300px;
+            text-align: right;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+            z-index: 100;
+        }
+        
+        .location-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #e74c3c;
+            letter-spacing: 1px;
+        }
+        
+        .location-country {
+            font-size: 1rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+        
+        .location-info {
+            font-size: 0.8rem;
+            line-height: 1.4;
+            opacity: 0.7;
+            max-width: 300px;
+        }
+        
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            text-align: center;
+            z-index: 100;
+        }
+        
+        /* Subscription form styling */
+        .subscription-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        
+        .subscription-form {
+            background-color: rgba(0, 0, 0, 0.8);
+            border: none;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: center;
+            color: white;
+            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
+            position: relative;
+            outline: none;
+        }
+        
+        .subscription-title {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #3498db;
+            letter-spacing: 3px;
+        }
+        
+        .subscription-message {
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .email-form-container {
+            display: flex;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        
+        .email-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            outline: none;
+        }
+        
+        .email-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .submit-button {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #3498db;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .submit-button:hover {
+            background-color: #2980b9;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        
+        .success-message {
+            display: none;
+            color: #2ecc71;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        
+        /* Mobile styles for subscription form */
+        @media (max-width: 768px) {
+            .subscription-form {
+                padding: 20px;
+                width: 85%;
+                max-height: 80vh;
+            }
+            
+            .subscription-title {
+                font-size: 28px;
+                margin-bottom: 15px;
+            }
+            
+            .subscription-message {
+                font-size: 14px;
+                margin-bottom: 20px;
+            }
+            
+            .email-input {
+                padding: 10px;
+                font-size: 14px;
+            }
+            
+            .submit-button {
+                width: 36px;
+                height: 36px;
+            }
+            
+            .success-message {
+                font-size: 16px;
+            }
+        }
+        
+        /* Extra small screens */
+        @media (max-width: 360px) {
+            .subscription-form {
+                padding: 15px;
+                width: 90%;
+            }
+            
+            .subscription-title {
+                font-size: 24px;
+                letter-spacing: 2px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Loading Earth...</div>
+    
+    <div class="info-panel">
+        <h1>Atlas</h1>
+        <p>Tripspin</p>
+        <div class="info-text">Travel isn't changing, but the way you plan your travel will never be the same.</div>
+    </div>
+    
+    <div class="click-indicator">Click to join ATLAS</div>
+    
+    <div class="pulse-container">
+        <div class="pulse"></div>
+    </div>
+    
+    <div class="location-panel" style="opacity: 0;">
+        <div class="location-name"></div>
+        <div class="location-country"></div>
+        <div class="location-info"></div>
+    </div>
+    
+    <!-- Email Subscription Form -->
+    <div class="subscription-container" id="subscriptionContainer">
+        <div class="subscription-form">
+            <button class="close-button" id="closeSubscription">×</button>
+            <div class="subscription-title">ATLAS</div>
+            <div class="subscription-message">
+                Enter your email below to join our Early Access program. We'll send you updates and next steps.
+            </div>
+            <form id="emailForm" onsubmit="return submitEmail(event)">
+                <div class="email-form-container">
+                    <input type="email" class="email-input" id="emailInput" placeholder="Write Your Email Here" required>
+                    <button type="submit" class="submit-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+            <div class="success-message" id="successMessage">
+                Thank you! We'll notify you when ATLAS is ready.
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Main variables
+        let scene, camera, renderer;
+        let earth, clouds, starField;
+        let texturesLoaded = 0;
+        const totalTextures = 3;
+        let currentLocationIndex = 0;
+        let locationUpdateInterval;
+        
+        // Preload textures before creating the scene
+        const textureLoader = new THREE.TextureLoader();
+        textureLoader.crossOrigin = 'anonymous';
+        const earthTexture = new THREE.Texture();
+        const bumpMap = new THREE.Texture();
+        const cloudTexture = new THREE.Texture();
+        
+        // Initialize loading
+        function init() {
+            // Add loading progress event
+            document.addEventListener('DOMContentLoaded', function() {
+                // Preload all textures first
+                preloadTextures();
+            });
+        }
+        
+        // Preload all textures
+        function preloadTextures() {
+            // Use CDN-hosted textures that work better with Webflow
+            textureLoader.load(
+                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_atmos_2048.jpg',
+                function(texture) {
+                    earthTexture.image = texture.image;
+                    earthTexture.needsUpdate = true;
+                    textureLoaded();
+                },
+                updateProgress,
+                handleTextureError
+            );
+            
+            textureLoader.load(
+                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_normal_2048.jpg',
+                function(texture) {
+                    bumpMap.image = texture.image;
+                    bumpMap.needsUpdate = true;
+                    textureLoaded();
+                },
+                updateProgress,
+                handleTextureError
+            );
+            
+            textureLoader.load(
+                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_clouds_1024.png',
+                function(texture) {
+                    cloudTexture.image = texture.image;
+                    cloudTexture.needsUpdate = true;
+                    textureLoaded();
+                },
+                updateProgress,
+                handleTextureError
+            );
+        }
+        
+        // Update loading progress
+        function updateProgress(xhr) {
+            if (xhr.lengthComputable) {
+                const percentComplete = xhr.loaded / xhr.total * 100;
+                document.getElementById('loading').textContent = 
+                    `Loading Earth... ${Math.round(percentComplete)}%`;
+            }
+        }
+        
+        // Handle texture loading error
+        function handleTextureError(error) {
+            console.error('Error loading texture', error);
+            document.getElementById('loading').textContent = 
+                'Error loading textures. Please refresh the page.';
+        }
+        
+        // Called when a texture is loaded
+        function textureLoaded() {
+            texturesLoaded++;
+            
+            // When all textures are loaded, create the scene
+            if (texturesLoaded === totalTextures) {
+                document.getElementById('loading').style.display = 'none';
+                createScene();
+                startLocationUpdates();
+            }
+        }
+        
+        // Create scene
+        function createScene() {
+            // Create scene
+            scene = new THREE.Scene();
+            
+            // Create camera
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            camera = new THREE.PerspectiveCamera(45, aspectRatio, 0.1, 1000);
+            
+            // Calculate camera position based on aspect ratio and screen size
+            updateCameraPosition();
+            
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true,
+                alpha: true
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            document.body.appendChild(renderer.domElement);
+            
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0x333333);
+            scene.add(ambientLight);
+            
+            // Add directional light
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 3, 5);
+            scene.add(directionalLight);
+            
+            // Create Earth
+            createEarth();
+            
+            // Create star field
+            createStarField();
+            
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize, false);
+            
+            // Start animation
+            animate();
+            
+            // Add event listener for globe click
+            renderer.domElement.addEventListener('click', showSubscriptionForm);
+            
+            // Adjust pulse size based on camera distance
+            adjustPulseSize();
+            
+            // Start the pulse and text animations after a delay
+            setTimeout(startPulseAnimation, 3000);
+            
+            // Start location updates with initial display
+            startLocationUpdates();
+        }
+        
+        // Check if device is mobile
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+        
+        // Calculate optimal camera position based on screen dimensions
+        function updateCameraPosition() {
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            const isMobileDevice = isMobile();
+            
+            // Base distance for desktop
+            let cameraDistance = 3.5;
+            
+            // Adjust for mobile
+            if (isMobileDevice) {
+                cameraDistance = 3.0;
+            }
+            
+            // Adjust for aspect ratio
+            if (aspectRatio < 1) {
+                // Portrait mode - needs to be further back
+                cameraDistance += (1 - aspectRatio) * 2;
+            } else if (aspectRatio > 1.8) {
+                // Very wide screens - can be a bit closer
+                cameraDistance -= (aspectRatio - 1.8) * 0.5;
+                cameraDistance = Math.max(cameraDistance, 2.8); // Don't get too close
+            }
+            
+            // Set camera position
+            camera.position.z = cameraDistance;
+        }
+        
+        // Handle window resize
+        function onWindowResize() {
+            // Update camera aspect ratio
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            
+            // Update camera position based on new dimensions
+            updateCameraPosition();
+            
+            // Update renderer size
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            
+            // Update UI elements positioning
+            updateUIPositioning();
+            
+            // Update pulse size when camera position changes
+            adjustPulseSize();
+        }
+        
+        // Update UI positioning based on screen size
+        function updateUIPositioning() {
+            const infoPanel = document.querySelector('.info-panel');
+            const locationPanel = document.querySelector('.location-panel');
+            const subscriptionForm = document.querySelector('.subscription-form');
+            
+            if (isMobile() || window.innerWidth < 768) {
+                // Mobile positioning
+                infoPanel.style.top = '20px';
+                infoPanel.style.left = '50%';
+                infoPanel.style.transform = 'translateX(-50%)';
+                infoPanel.style.textAlign = 'center';
+                
+                locationPanel.style.bottom = '20px';
+                locationPanel.style.left = '50%';
+                locationPanel.style.right = 'auto';
+                locationPanel.style.transform = 'translateX(-50%)';
+                locationPanel.style.textAlign = 'center';
+                
+                // Make sure all child elements are centered
+                document.querySelectorAll('.location-name, .location-country, .location-info').forEach(el => {
+                    el.style.textAlign = 'center';
+                });
+                
+                // Adjust subscription form for mobile
+                if (subscriptionForm) {
+                    if (window.innerHeight < 600) {
+                        subscriptionForm.style.maxHeight = '85vh';
+                    }
+                }
+            } else {
+                // Desktop positioning
+                infoPanel.style.top = '30px';
+                infoPanel.style.left = '30px';
+                infoPanel.style.transform = 'none';
+                infoPanel.style.textAlign = 'left';
+                
+                locationPanel.style.bottom = '30px';
+                locationPanel.style.right = '30px';
+                locationPanel.style.left = 'auto';
+                locationPanel.style.transform = 'none';
+                locationPanel.style.textAlign = 'right';
+                
+                // Reset child elements alignment
+                document.querySelectorAll('.location-name, .location-country, .location-info').forEach(el => {
+                    el.style.textAlign = 'right';
+                });
+            }
+        }
+        
+        // Create Earth with clouds
+        function createEarth() {
+            // Create Earth sphere
+            const earthGeometry = new THREE.SphereGeometry(1, 32, 32);
+            const earthMaterial = new THREE.MeshPhongMaterial({
+                map: earthTexture,
+                bumpMap: bumpMap,
+                bumpScale: 0.05,
+                specular: new THREE.Color(0x333333),
+                shininess: 5
+            });
+            earth = new THREE.Mesh(earthGeometry, earthMaterial);
+            scene.add(earth);
+            
+            // Create cloud layer
+            const cloudGeometry = new THREE.SphereGeometry(1.03, 32, 32);
+            const cloudMaterial = new THREE.MeshPhongMaterial({
+                map: cloudTexture,
+                transparent: true,
+                opacity: 0.8,
+                depthWrite: false,
+                side: THREE.DoubleSide
+            });
+            clouds = new THREE.Mesh(cloudGeometry, cloudMaterial);
+            scene.add(clouds);
+            
+            // Create atmosphere glow
+            const atmosphereGeometry = new THREE.SphereGeometry(1.05, 32, 32);
+            const atmosphereMaterial = new THREE.MeshPhongMaterial({
+                color: 0x3498db,
+                transparent: true,
+                opacity: 0.1,
+                side: THREE.BackSide
+            });
+            const atmosphere = new THREE.Mesh(atmosphereGeometry, atmosphereMaterial);
+            scene.add(atmosphere);
+        }
+        
+        // Create star field background
+        function createStarField() {
+            const starsGeometry = new THREE.BufferGeometry();
+            const starsMaterial = new THREE.PointsMaterial({
+                color: 0xffffff,
+                size: 0.1,
+                transparent: true
+            });
+            
+            const starsVertices = [];
+            for (let i = 0; i < 5000; i++) {
+                const x = (Math.random() - 0.5) * 2000;
+                const y = (Math.random() - 0.5) * 2000;
+                const z = (Math.random() - 0.5) * 2000;
+                starsVertices.push(x, y, z);
+            }
+            
+            starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
+            starField = new THREE.Points(starsGeometry, starsMaterial);
+            scene.add(starField);
+        }
+        
+        // Start location updates
+        function startLocationUpdates() {
+            // Show first location
+            updateLocationInfo(0);
+            
+            // Update location every 15 seconds, with first change after 10 seconds
+            setTimeout(function() {
+                rotateLocations();
+                locationUpdateInterval = setInterval(rotateLocations, 15000);
+            }, 10000);
+        }
+        
+        // Update location info
+        function updateLocationInfo(index) {
+            const locationPanel = document.querySelector('.location-panel');
+            const locationName = document.querySelector('.location-name');
+            const locationCountry = document.querySelector('.location-country');
+            const locationInfo = document.querySelector('.location-info');
+            
+            // Hide location panel first
+            locationPanel.style.opacity = '0';
+            
+            // Update content after a short delay
+            setTimeout(() => {
+                locationName.textContent = locationData[index].name;
+                locationCountry.textContent = locationData[index].country;
+                locationInfo.textContent = locationData[index].info;
+                
+                // Fade in
+                locationPanel.style.opacity = '0.8';
+                
+                // Update index for next location
+                currentLocationIndex = (currentLocationIndex + 1) % locationData.length;
+            }, 300);
+        }
+        
+        // Rotate through locations
+        function rotateLocations() {
+            updateLocationInfo(currentLocationIndex);
+        }
+        
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            // Rotate Earth
+            earth.rotation.y += 0.0005;
+            
+            // Rotate clouds at a different speed to simulate atmospheric movement
+            clouds.rotation.y += 0.0008;
+            
+            // Render the scene
+            renderer.render(scene, camera);
+        }
+        
+        // Location data - 50 major cities around the world
+        const locationData = [
+            { name: "New York", country: "USA", info: "The city that never sleeps, known for its iconic skyline and cultural diversity." },
+            { name: "London", country: "UK", info: "Historic city on the Thames with royal palaces, museums, and vibrant culture." },
+            { name: "Tokyo", country: "Japan", info: "Ultra-modern metropolis with ancient temples, innovative technology, and amazing food." },
+            { name: "Sydney", country: "Australia", info: "Harbor city known for its Opera House, beaches, and laid-back lifestyle." },
+            { name: "Rio de Janeiro", country: "Brazil", info: "Stunning coastal city with mountains, beaches, and the iconic Christ the Redeemer statue." },
+            { name: "Cape Town", country: "South Africa", info: "Beautiful city at the foot of Table Mountain with diverse culture and landscapes." },
+            { name: "Dubai", country: "UAE", info: "Futuristic city in the desert with the world's tallest building and luxury shopping." },
+            { name: "Paris", country: "France", info: "City of Light famous for the Eiffel Tower, art museums, and romantic atmosphere." },
+            { name: "Beijing", country: "China", info: "Ancient capital with the Forbidden City, Great Wall, and modern architecture." },
+            { name: "Moscow", country: "Russia", info: "Historic city with the iconic Red Square, St. Basil's Cathedral, and rich cultural heritage." },
+            { name: "Mumbai", country: "India", info: "India's financial center with colonial architecture and vibrant street life." },
+            { name: "Bangkok", country: "Thailand", info: "Vibrant city known for ornate shrines, street food, and bustling markets." },
+            { name: "Cairo", country: "Egypt", info: "Ancient city with the pyramids, sphinx, and rich historical heritage." },
+            { name: "Mexico City", country: "Mexico", info: "Sprawling metropolis with ancient ruins, colonial architecture, and vibrant culture." },
+            { name: "Berlin", country: "Germany", info: "Cultural hub with a tumultuous history, world-class museums, and vibrant nightlife." },
+            { name: "Rome", country: "Italy", info: "Eternal city with ancient ruins, Renaissance art, and delicious cuisine." },
+            { name: "Istanbul", country: "Turkey", info: "City straddling two continents with Byzantine and Ottoman heritage." },
+            { name: "Singapore", country: "Singapore", info: "Modern city-state with futuristic architecture, lush gardens, and diverse culture." },
+            { name: "Toronto", country: "Canada", info: "Multicultural metropolis with the CN Tower and vibrant neighborhoods." },
+            { name: "Los Angeles", country: "USA", info: "Entertainment capital with Hollywood, beaches, and diverse culture." },
+            { name: "Buenos Aires", country: "Argentina", info: "Elegant city with European architecture, tango, and vibrant street life." },
+            { name: "Seoul", country: "South Korea", info: "Tech-forward city with ancient palaces, street markets, and K-pop culture." },
+            { name: "Amsterdam", country: "Netherlands", info: "Canal-lined city with historic buildings, museums, and cycling culture." },
+            { name: "Barcelona", country: "Spain", info: "Mediterranean gem with Gaudí architecture, beaches, and vibrant street life." },
+            { name: "Vienna", country: "Austria", info: "Imperial city with classical music heritage, palaces, and coffee house culture." },
+            { name: "San Francisco", country: "USA", info: "Hilly city with the Golden Gate Bridge, Victorian houses, and tech innovation." },
+            { name: "Prague", country: "Czech Republic", info: "City of a hundred spires with medieval architecture and rich history." },
+            { name: "Marrakech", country: "Morocco", info: "Vibrant city with markets, gardens, and historic medina." },
+            { name: "Vancouver", country: "Canada", info: "Coastal city surrounded by mountains, known for outdoor activities and film industry." },
+            { name: "Kyoto", country: "Japan", info: "Cultural heart of Japan with thousands of temples, shrines, and traditional gardens." },
+            { name: "Stockholm", country: "Sweden", info: "Beautiful archipelago city with colorful old town and innovative design." },
+            { name: "Athens", country: "Greece", info: "Ancient city with the Acropolis, Parthenon, and the birthplace of democracy." },
+            { name: "Jerusalem", country: "Israel", info: "Holy city sacred to three major religions with ancient history and diverse quarters." },
+            { name: "Havana", country: "Cuba", info: "Colorful city with vintage cars, colonial architecture, and vibrant music scene." },
+            { name: "Lisbon", country: "Portugal", info: "Coastal city with historic trams, colorful buildings, and delicious seafood." },
+            { name: "Edinburgh", country: "UK", info: "Scottish capital with medieval old town, castle, and annual festivals." },
+            { name: "Dublin", country: "Ireland", info: "Friendly city with literary heritage, historic pubs, and Georgian architecture." },
+            { name: "Copenhagen", country: "Denmark", info: "Scandinavian city known for design, cycling culture, and colorful harbor." },
+            { name: "Helsinki", country: "Finland", info: "Seaside city with modern design, saunas, and beautiful archipelago." },
+            { name: "Oslo", country: "Norway", info: "Capital surrounded by fjords and forests with Viking history and modern architecture." },
+            { name: "Zurich", country: "Switzerland", info: "Banking hub with medieval old town, lake views, and mountain proximity." },
+            { name: "Brussels", country: "Belgium", info: "European capital known for chocolate, beer, and grand architecture." },
+            { name: "Budapest", country: "Hungary", info: "City divided by the Danube with thermal baths, historic bridges, and Gothic parliament." },
+            { name: "Krakow", country: "Poland", info: "Historic city with medieval market square, castle, and Jewish quarter." },
+            { name: "Warsaw", country: "Poland", info: "Rebuilt capital with royal castle, old town, and modern skyscrapers." },
+            { name: "Reykjavik", country: "Iceland", info: "Colorful northern city with geothermal energy, music scene, and gateway to natural wonders." },
+            { name: "Auckland", country: "New Zealand", info: "Harbor city surrounded by volcanoes with sailing culture and Polynesian influence." },
+            { name: "Honolulu", country: "USA", info: "Hawaiian capital with Waikiki Beach, volcanic craters, and Polynesian culture." },
+            { name: "Johannesburg", country: "South Africa", info: "Largest city in South Africa with gold mining history and vibrant culture." },
+            { name: "Lima", country: "Peru", info: "Coastal capital with colonial architecture, pre-Columbian sites, and acclaimed cuisine." }
+        ];
+        
+        // Start the application
+        init();
+        
+        // Add script to head for faster loading
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listener to document for mobile devices
+            document.addEventListener('click', function(event) {
+                if (event.target.closest('.close-button')) return;
+                if (document.getElementById('subscriptionContainer').style.opacity !== '1') {
+                    showSubscriptionForm();
+                }
+            });
+        });
+        
+        // Call updateUIPositioning on load to set initial positions
+        window.addEventListener('load', function() {
+            updateUIPositioning();
+        });
+        
+        // Adjust pulse size based on camera distance
+        function adjustPulseSize() {
+            const pulseElement = document.querySelector('.pulse');
+            const clickIndicator = document.querySelector('.click-indicator');
+            const pulseMobileBaseSize = 160;
+            const pulseDesktopBaseSize = 240;
+            
+            const baseSize = isMobile() ? pulseMobileBaseSize : pulseDesktopBaseSize;
+            const maxSize = baseSize * 1.67;
+            
+            // Position the text indicator below the pulse radius
+            const textPosition = maxSize / 2 + 20; // Half the max size plus a small gap
+            
+            // Adjust position based on aspect ratio
+            const aspectRatio = window.innerWidth / window.innerHeight;
+            let yOffset = textPosition;
+            
+            // For portrait mode or small screens, reduce the vertical offset
+            if (aspectRatio < 1 || window.innerHeight < 600) {
+                yOffset = Math.min(textPosition, window.innerHeight * 0.25);
+            }
+            
+            // Update text position
+            clickIndicator.style.transform = `translate(-50%, calc(50% + ${yOffset}px))`;
+        }
+        
+        // Start the pulse and text animations
+        function startPulseAnimation() {
+            const pulseContainer = document.querySelector('.pulse-container');
+            const pulseElement = document.querySelector('.pulse');
+            const clickIndicator = document.querySelector('.click-indicator');
+            
+            // Make elements visible
+            pulseContainer.style.visibility = 'visible';
+            clickIndicator.style.visibility = 'visible';
+            
+            // Add animation classes to start animations
+            pulseContainer.classList.add('animate');
+            pulseElement.classList.add('animate');
+            clickIndicator.classList.add('animate');
+            
+            // Keep the pulse animation running continuously
+            // No need to remove the animation classes
+        }
+        
+        // Show subscription form
+        function showSubscriptionForm() {
+            const container = document.getElementById('subscriptionContainer');
+            container.style.opacity = '1';
+            container.style.visibility = 'visible';
+            
+            // Hide the click indicator and pulse when form is shown
+            const pulseContainer = document.querySelector('.pulse-container');
+            const pulseElement = document.querySelector('.pulse');
+            const clickIndicator = document.querySelector('.click-indicator');
+            
+            pulseContainer.classList.remove('animate');
+            pulseElement.classList.remove('animate');
+            clickIndicator.classList.remove('animate');
+            
+            pulseContainer.style.visibility = 'hidden';
+            clickIndicator.style.visibility = 'hidden';
+        }
+        
+        // Close subscription form
+        document.getElementById('closeSubscription').addEventListener('click', function() {
+            const container = document.getElementById('subscriptionContainer');
+            container.style.opacity = '0';
+            container.style.visibility = 'hidden';
+            
+            // Show the click indicator and pulse again when form is closed
+            setTimeout(() => {
+                startPulseAnimation();
+            }, 500);
+        });
+        
+        // Submit email function
+        function submitEmail(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('emailInput');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Simple validation
+            if (emailInput.value && emailInput.checkValidity()) {
+                // In a real application, you would send this to a server
+                console.log('Email submitted:', emailInput.value);
+                
+                // Show success message
+                document.querySelector('.email-form-container').style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Close form after delay
+                setTimeout(() => {
+                    const container = document.getElementById('subscriptionContainer');
+                    container.style.opacity = '0';
+                    container.style.visibility = 'hidden';
+                    
+                    // Reset form after it's hidden
+                    setTimeout(() => {
+                        emailInput.value = '';
+                        document.querySelector('.email-form-container').style.display = 'flex';
+                        successMessage.style.display = 'none';
+                    }, 500);
+                }, 2000);
+            }
+            
+            return false;
+        }
+    </script>
+</body>
+</html>
