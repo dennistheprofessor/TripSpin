@@ -894,24 +894,92 @@
             { name: "Lima", country: "Peru", info: "Coastal capital with colonial architecture, pre-Columbian sites, and acclaimed cuisine." }
         ];
         
-        // API configuration
-        const API_CONFIG = {
-            local: 'http://localhost:3000/api/subscribe',
-            production: 'https://atlas-earth-backend.onrender.com/api/subscribe'
+        // Resend API configuration
+        const RESEND_CONFIG = {
+            apiKey: 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF',
+            audienceId: 'b691bbd2-9a0c-4102-873f-c5c5e28708f7',
+            apiUrl: 'https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts'
         };
         
-        // Get the appropriate API URL based on the current environment
-        function getApiUrl() {
-            // Check if we're running on GitHub Pages
-            if (window.location.hostname === 'dennistheprofessor.github.io') {
-                return API_CONFIG.production;
+        // Submit email function
+        function submitEmail(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('emailInput');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Simple validation
+            if (emailInput.value && emailInput.checkValidity()) {
+                console.log('Submitting email directly to Resend API:', emailInput.value);
+                
+                // Send the email directly to Resend API
+                fetch(RESEND_CONFIG.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value,
+                        first_name: '',
+                        last_name: '',
+                        unsubscribed: false
+                    })
+                })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            console.error('Error response:', text);
+                            throw new Error(`Request failed with status ${response.status}: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Email submitted successfully:', data);
+                    
+                    // Show success message
+                    document.querySelector('.email-form-container').style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // Close form after delay
+                    setTimeout(() => {
+                        const container = document.getElementById('subscriptionContainer');
+                        container.style.opacity = '0';
+                        container.style.visibility = 'hidden';
+                        
+                        // Reset form after it's hidden
+                        setTimeout(() => {
+                            emailInput.value = '';
+                            document.querySelector('.email-form-container').style.display = 'flex';
+                            successMessage.style.display = 'none';
+                        }, 500);
+                    }, 2000);
+                })
+                .catch(error => {
+                    console.error('Error submitting email:', error);
+                    
+                    // Still show success to the user for a better experience
+                    document.querySelector('.email-form-container').style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // Close form after delay
+                    setTimeout(() => {
+                        const container = document.getElementById('subscriptionContainer');
+                        container.style.opacity = '0';
+                        container.style.visibility = 'hidden';
+                        
+                        // Reset form after it's hidden
+                        setTimeout(() => {
+                            emailInput.value = '';
+                            document.querySelector('.email-form-container').style.display = 'flex';
+                            successMessage.style.display = 'none';
+                        }, 500);
+                    }, 2000);
+                });
             }
-            // Check if we're running locally
-            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-                return API_CONFIG.local;
-            }
-            // Default to production for any other hosting
-            return API_CONFIG.production;
+            
+            return false;
         }
         
         // Start the application
@@ -1008,83 +1076,6 @@
                 startPulseAnimation();
             }, 500);
         });
-        
-        // Submit email function
-        function submitEmail(event) {
-            event.preventDefault();
-            const emailInput = document.getElementById('emailInput');
-            const successMessage = document.getElementById('successMessage');
-            
-            // Simple validation
-            if (emailInput.value && emailInput.checkValidity()) {
-                console.log('Submitting email to:', getApiUrl());
-                
-                // Send the email to our backend service
-                fetch(getApiUrl(), {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: emailInput.value
-                    }),
-                    mode: 'cors' // Explicitly set CORS mode
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok: ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Email submitted successfully:', data);
-                    
-                    // Show success message
-                    document.querySelector('.email-form-container').style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Close form after delay
-                    setTimeout(() => {
-                        const container = document.getElementById('subscriptionContainer');
-                        container.style.opacity = '0';
-                        container.style.visibility = 'hidden';
-                        
-                        // Reset form after it's hidden
-                        setTimeout(() => {
-                            emailInput.value = '';
-                            document.querySelector('.email-form-container').style.display = 'flex';
-                            successMessage.style.display = 'none';
-                        }, 500);
-                    }, 2000);
-                })
-                .catch(error => {
-                    console.error('Error submitting email:', error);
-                    
-                    // Still show success to the user for a better experience
-                    // but log the error for debugging
-                    document.querySelector('.email-form-container').style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Close form after delay
-                    setTimeout(() => {
-                        const container = document.getElementById('subscriptionContainer');
-                        container.style.opacity = '0';
-                        container.style.visibility = 'hidden';
-                        
-                        // Reset form after it's hidden
-                        setTimeout(() => {
-                            emailInput.value = '';
-                            document.querySelector('.email-form-container').style.display = 'flex';
-                            successMessage.style.display = 'none';
-                        }, 500);
-                    }, 2000);
-                });
-            }
-            
-            return false;
-        }
     </script>
 </body>
 </html>
