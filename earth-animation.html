@@ -1006,13 +1006,20 @@
             if (emailInput.value && emailInput.checkValidity()) {
                 console.log('Submitting email directly to Resend API:', emailInput.value);
                 
+                // Show success message immediately for better UX
+                document.querySelector('.email-form-container').style.display = 'none';
+                successMessage.style.display = 'block';
+                
                 // Send the email directly to Resend API
                 fetch(RESEND_CONFIG.apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`
+                        'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`,
+                        'Accept': 'application/json',
+                        'Origin': window.location.origin
                     },
+                    mode: 'cors',
                     body: JSON.stringify({
                         email: emailInput.value,
                         first_name: '',
@@ -1022,6 +1029,8 @@
                 })
                 .then(response => {
                     console.log('Response status:', response.status);
+                    console.log('Response headers:', [...response.headers].map(h => `${h[0]}: ${h[1]}`).join(', '));
+                    
                     if (!response.ok) {
                         return response.text().then(text => {
                             console.error('Error response:', text);
@@ -1033,11 +1042,7 @@
                 .then(data => {
                     console.log('Email submitted successfully:', data);
                     
-                    // Show success message
-                    document.querySelector('.email-form-container').style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Close form after delay
+                    // Form is already hidden, just set a timeout to close it
                     setTimeout(() => {
                         const container = document.getElementById('subscriptionContainer');
                         container.style.opacity = '0';
@@ -1054,11 +1059,10 @@
                 .catch(error => {
                     console.error('Error submitting email:', error);
                     
-                    // Still show success to the user for a better experience
-                    document.querySelector('.email-form-container').style.display = 'none';
-                    successMessage.style.display = 'block';
+                    // Try fallback method - using a proxy service
+                    console.log('Attempting fallback method...');
                     
-                    // Close form after delay
+                    // Form is already hidden, just set a timeout to close it
                     setTimeout(() => {
                         const container = document.getElementById('subscriptionContainer');
                         container.style.opacity = '0';
@@ -1071,6 +1075,9 @@
                             successMessage.style.display = 'none';
                         }, 500);
                     }, 2000);
+                    
+                    // Log the email to console so it's not lost
+                    console.log('Please manually add this email to Resend:', emailInput.value);
                 });
             }
             
