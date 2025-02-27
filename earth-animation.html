@@ -286,130 +286,112 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
+            background-color: rgba(0, 0, 0, 0.7);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1000;
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.5s ease, visibility 0.5s ease;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
         }
         
-        .subscription-form {
-            background-color: rgba(0, 0, 0, 0.8);
-            border: none;
-            border-radius: 15px;
+        .subscription-content {
+            background-color: #fff;
+            border-radius: 8px;
             padding: 30px;
             width: 90%;
-            max-width: 500px;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-width: 400px;
             text-align: center;
-            color: white;
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
-            position: relative;
-            outline: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
         
-        .subscription-title {
-            font-size: 36px;
-            margin-bottom: 20px;
-            color: #3498db;
-            letter-spacing: 3px;
-        }
-        
-        .subscription-message {
-            margin-bottom: 25px;
-            line-height: 1.6;
-        }
-        
-        .email-form-container {
-            display: flex;
+        .email-form-container h2 {
+            color: #333;
+            margin-top: 0;
             margin-bottom: 10px;
-            position: relative;
         }
         
-        .email-input {
+        .email-form-container p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            margin-bottom: 15px;
+        }
+        
+        .form-group input[type="email"] {
             flex: 1;
             padding: 12px 15px;
-            border: none;
-            border-radius: 30px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
             font-size: 16px;
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            outline: none;
         }
         
-        .email-input::placeholder {
-            color: rgba(255, 255, 255, 0.7);
-        }
-        
-        .submit-button {
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
+        .form-group button {
             background-color: #3498db;
+            color: white;
             border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 12px 20px;
+            border-radius: 0 4px 4px 0;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-size: 16px;
+            transition: background-color 0.3s;
         }
         
-        .submit-button:hover {
+        .form-group button:hover {
             background-color: #2980b9;
         }
         
-        .close-button {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            padding: 0;
-            line-height: 1;
+        .success-message {
+            color: #333;
         }
         
-        .success-message {
-            display: none;
-            color: #2ecc71;
-            font-size: 18px;
+        .success-message h2 {
+            color: #27ae60;
+            margin-top: 0;
+        }
+        
+        .alternative-signup {
             margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .alternative-signup a {
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .alternative-signup a:hover {
+            text-decoration: underline;
         }
         
         /* Mobile styles for subscription form */
         @media (max-width: 768px) {
-            .subscription-form {
+            .subscription-content {
                 padding: 20px;
                 width: 85%;
                 max-height: 80vh;
             }
             
-            .subscription-title {
+            .email-form-container h2 {
                 font-size: 28px;
                 margin-bottom: 15px;
             }
             
-            .subscription-message {
+            .email-form-container p {
                 font-size: 14px;
                 margin-bottom: 20px;
             }
             
-            .email-input {
+            .form-group input[type="email"] {
                 padding: 10px;
                 font-size: 14px;
             }
             
-            .submit-button {
+            .form-group button {
                 width: 36px;
                 height: 36px;
             }
@@ -421,12 +403,12 @@
         
         /* Extra small screens */
         @media (max-width: 360px) {
-            .subscription-form {
+            .subscription-content {
                 padding: 15px;
                 width: 90%;
             }
             
-            .subscription-title {
+            .email-form-container h2 {
                 font-size: 24px;
                 letter-spacing: 2px;
             }
@@ -455,25 +437,24 @@
     </div>
     
     <!-- Email Subscription Form -->
-    <div class="subscription-container" id="subscriptionContainer">
-        <div class="subscription-form">
-            <button class="close-button" id="closeSubscription">×</button>
-            <div class="subscription-title">ATLAS</div>
-            <div class="subscription-message">
-                Enter your email below to join our Early Access program. We'll send you updates and next steps.
-            </div>
-            <form id="emailForm" onsubmit="return submitEmail(event)">
-                <div class="email-form-container">
-                    <input type="email" class="email-input" id="emailInput" placeholder="Write Your Email Here" required>
-                    <button type="submit" class="submit-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z"/>
-                        </svg>
-                    </button>
+    <div id="subscriptionContainer" class="subscription-container">
+        <div class="subscription-content">
+            <div class="email-form-container">
+                <h2>Join Atlas Early Access</h2>
+                <p>Be the first to experience our revolutionary travel platform.</p>
+                <form id="emailForm" onsubmit="return submitEmail(event)">
+                    <div class="form-group">
+                        <input type="email" id="emailInput" placeholder="Enter your email" required>
+                        <button type="submit">Join</button>
+                    </div>
+                </form>
+                <div class="alternative-signup">
+                    <p>Having trouble? <a href="earth-animation-proxy.html" target="_blank">Try our alternative signup page</a></p>
                 </div>
-            </form>
-            <div class="success-message" id="successMessage">
-                Thank you! We'll notify you when ATLAS is ready.
+            </div>
+            <div id="successMessage" class="success-message" style="display: none;">
+                <h2>Thank You!</h2>
+                <p>You've been added to our early access list.</p>
             </div>
         </div>
     </div>
