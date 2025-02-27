@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 0;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        pre {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>API Connection Test</h1>
+        
+        <div>
+            <h2>1. Test Health Check Endpoint</h2>
+            <p>This will test if the API server is running and accessible.</p>
+            <button id="testHealth">Test Health Endpoint</button>
+            <div id="healthResult"></div>
+        </div>
+        
+        <div>
+            <h2>2. Test Email Subscription</h2>
+            <p>This will test if the email subscription endpoint is working.</p>
+            <input type="email" id="testEmail" placeholder="Enter test email" value="test@example.com">
+            <button id="testSubscribe">Test Subscribe Endpoint</button>
+            <div id="subscribeResult"></div>
+        </div>
+        
+        <div>
+            <h2>3. API Information</h2>
+            <p>Current API URL: <span id="apiUrl"></span></p>
+        </div>
+    </div>
+
+    <script>
+        // API URL
+        const API_BASE_URL = 'https://atlas-earth-backend.onrender.com';
+        
+        // Display the API URL
+        document.getElementById('apiUrl').textContent = API_BASE_URL;
+        
+        // Test health endpoint
+        document.getElementById('testHealth').addEventListener('click', function() {
+            const resultDiv = document.getElementById('healthResult');
+            resultDiv.innerHTML = '<p>Testing connection...</p>';
+            
+            fetch(`${API_BASE_URL}/`)
+                .then(response => {
+                    console.log('Health check response:', response);
+                    if (!response.ok) {
+                        throw new Error(`Status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Connection successful!</p>
+                        <p>Response: ${data}</p>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Health check error:', error);
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Connection failed!</p>
+                        <p>Error: ${error.message}</p>
+                        <p>This could be due to:</p>
+                        <ul>
+                            <li>The server is not running</li>
+                            <li>CORS is not properly configured</li>
+                            <li>The URL is incorrect</li>
+                            <li>Network issues</li>
+                        </ul>
+                    `;
+                });
+        });
+        
+        // Test subscribe endpoint
+        document.getElementById('testSubscribe').addEventListener('click', function() {
+            const email = document.getElementById('testEmail').value;
+            const resultDiv = document.getElementById('subscribeResult');
+            
+            if (!email) {
+                resultDiv.innerHTML = '<p class="error">Please enter an email address</p>';
+                return;
+            }
+            
+            resultDiv.innerHTML = '<p>Testing subscription...</p>';
+            
+            fetch(`${API_BASE_URL}/api/subscribe`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ email }),
+                mode: 'cors'
+            })
+            .then(response => {
+                console.log('Subscribe response:', response);
+                return response.json().catch(e => {
+                    // If JSON parsing fails, return the status
+                    return { status: response.status, error: 'Invalid JSON response' };
+                });
+            })
+            .then(data => {
+                console.log('Subscribe data:', data);
+                if (data.success) {
+                    resultDiv.innerHTML = `
+                        <p class="success">✅ Subscription successful!</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <p class="error">❌ Subscription failed!</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Subscribe error:', error);
+                resultDiv.innerHTML = `
+                    <p class="error">❌ Subscription request failed!</p>
+                    <p>Error: ${error.message}</p>
+                    <p>Check the browser console for more details.</p>
+                `;
+            });
+        });
+    </script>
+</body>
+</html>
