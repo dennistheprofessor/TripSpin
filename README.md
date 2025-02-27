@@ -92,6 +92,51 @@ git push -u origin main
 2. Ensure all features are working correctly
 3. Test on different devices and browsers
 
+## Deployment with Render.com
+
+### Step 1: Create a Render.com account
+
+1. Sign up at [Render.com](https://render.com)
+
+### Step 2: Connect your GitHub repository
+
+1. In Render dashboard, click "New" > "Web Service"
+2. Connect your GitHub account
+3. Select the travel-animation repository
+
+### Step 3: Configure the web service
+
+1. Name: `travel-animation-backend` (or your preferred name)
+2. Environment: `Node`
+3. Build Command: `npm install`
+4. Start Command: `node server.js`
+
+### Step 4: Set environment variables
+
+1. Add the following environment variables:
+   - `RESEND_API_KEY`: Your Resend API key
+   - `RESEND_AUDIENCE_ID`: Your Resend audience ID
+   - `PORT`: 10000 (Render's default port)
+
+### Step 5: Deploy the service
+
+1. Click "Create Web Service"
+2. Wait for the deployment to complete
+
+### Step 6: Update the frontend
+
+1. Once deployed, you'll get a URL like `https://travel-animation-backend.onrender.com`
+2. Update the fetch URL in `index.html` to point to your Render URL:
+   ```javascript
+   fetch('https://travel-animation-backend.onrender.com/api/subscribe', {
+     // ...
+   })
+   ```
+
+### Step 7: Push the updated code
+
+1. Commit and push your changes to GitHub
+
 ## Email Collection with Resend.com
 
 This project includes integration with Resend.com for collecting email addresses from users who want to join the ATLAS early access program.

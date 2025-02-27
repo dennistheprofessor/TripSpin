@@ -10,10 +10,23 @@ const PORT = process.env.PORT || 3000;
 // Initialize Resend
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// CORS configuration
+const corsOptions = {
+  origin: ['https://dennistheprofessor.github.io', 'http://localhost:3000'],
+  methods: ['GET', 'POST'],
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 app.use(express.static('.')); // Serve static files from current directory
+
+// Health check endpoint
+app.get('/', (req, res) => {
+  res.status(200).send('Atlas Earth Animation API is running');
+});
 
 // Route to handle email submissions
 app.post('/api/subscribe', async (req, res) => {

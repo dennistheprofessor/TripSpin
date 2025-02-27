@@ -894,6 +894,26 @@
             { name: "Lima", country: "Peru", info: "Coastal capital with colonial architecture, pre-Columbian sites, and acclaimed cuisine." }
         ];
         
+        // API configuration
+        const API_CONFIG = {
+            local: 'http://localhost:3000/api/subscribe',
+            production: 'https://atlas-earth-backend.onrender.com/api/subscribe'
+        };
+        
+        // Get the appropriate API URL based on the current environment
+        function getApiUrl() {
+            // Check if we're running on GitHub Pages
+            if (window.location.hostname === 'dennistheprofessor.github.io') {
+                return API_CONFIG.production;
+            }
+            // Check if we're running locally
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                return API_CONFIG.local;
+            }
+            // Default to production for any other hosting
+            return API_CONFIG.production;
+        }
+        
         // Start the application
         init();
         
@@ -998,7 +1018,7 @@
             // Simple validation
             if (emailInput.value && emailInput.checkValidity()) {
                 // Send the email to our backend service
-                fetch('/api/subscribe', {
+                fetch(getApiUrl(), {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
