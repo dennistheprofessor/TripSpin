@@ -35,6 +35,7 @@
             font-size: 16px;
             border: 1px solid #ddd;
             border-radius: 4px;
+            box-sizing: border-box;
         }
         button {
             padding: 10px 20px;
@@ -130,11 +131,16 @@
             loadingDiv.style.display = 'block';
             resultDiv.style.display = 'none';
             
-            // First try CORS proxy
-            submitViaProxy(email)
+            // First try formsubmit.co as a reliable form endpoint
+            submitViaFormSubmit(email)
+                .catch(error => {
+                    console.error('FormSubmit failed:', error);
+                    // Try CORS proxy as fallback
+                    return submitViaProxy(email);
+                })
                 .catch(error => {
                     console.error('CORS proxy failed:', error);
-                    // Try jsonp-cors-proxy as fallback
+                    // Try another proxy as final fallback
                     return submitViaJsonpProxy(email);
                 })
                 .then(data => {
@@ -152,6 +158,49 @@
                     loadingDiv.style.display = 'none';
                 });
         });
+        
+        function submitViaFormSubmit(email) {
+            console.log('Trying FormSubmit service...');
+            return new Promise((resolve, reject) => {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = 'https://formsubmit.co/ajax/re_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF@resend.dev';
+                form.style.display = 'none';
+                
+                const emailInput = document.createElement('input');
+                emailInput.type = 'email';
+                emailInput.name = 'email';
+                emailInput.value = email;
+                
+                form.appendChild(emailInput);
+                document.body.appendChild(form);
+                
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    document.body.removeChild(form);
+                    if (!response.ok) {
+                        throw new Error('FormSubmit request failed');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('FormSubmit success:', data);
+                    resolve(data);
+                })
+                .catch(error => {
+                    document.body.removeChild(form);
+                    reject(error);
+                });
+            });
+        }
         
         function submitViaProxy(email) {
             console.log('Trying CORS Anywhere proxy...');

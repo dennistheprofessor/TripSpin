@@ -487,17 +487,15 @@
         
         // Preload all textures
         function preloadTextures() {
-            // Use CDN-hosted textures that work better with Webflow
-            textureLoader.load(
-                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_atmos_2048.jpg',
-                function(texture) {
+            loadEarthTexture()
+                .then(texture => {
                     earthTexture.image = texture.image;
                     earthTexture.needsUpdate = true;
                     textureLoaded();
-                },
-                updateProgress,
-                handleTextureError
-            );
+                })
+                .catch(error => {
+                    console.error('Error loading earth texture:', error);
+                });
             
             textureLoader.load(
                 'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_normal_2048.jpg',
@@ -520,6 +518,56 @@
                 updateProgress,
                 handleTextureError
             );
+        }
+        
+        // Create texture loader with CORS settings
+        function loadEarthTexture() {
+            return new Promise((resolve, reject) => {
+                // Primary CDN source
+                const primaryUrl = 'https://cdn.jsdelivr.net/gh/dennistheprofessor/TripSpin@main/earth_texture.jpg';
+                
+                // Fallback sources
+                const fallbackUrls = [
+                    'https://esm.sh/three@0.128.0/examples/textures/planets/earth_atmos_2048.jpg',
+                    'https://threejs.org/examples/textures/planets/earth_atmos_2048.jpg'
+                ];
+                
+                // Try loading from primary source
+                textureLoader.load(
+                    primaryUrl,
+                    texture => resolve(texture),
+                    undefined,
+                    () => {
+                        console.log('Primary texture source failed, trying fallbacks...');
+                        tryFallbacks(0);
+                    }
+                );
+                
+                // Try fallback sources in sequence
+                function tryFallbacks(index) {
+                    if (index >= fallbackUrls.length) {
+                        // All fallbacks failed, create a basic texture
+                        console.error('All texture sources failed, using basic texture');
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 2048;
+                        canvas.height = 1024;
+                        const ctx = canvas.getContext('2d');
+                        ctx.fillStyle = '#1a4d7e';
+                        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                        
+                        const basicTexture = new THREE.CanvasTexture(canvas);
+                        resolve(basicTexture);
+                        return;
+                    }
+                    
+                    textureLoader.load(
+                        fallbackUrls[index],
+                        texture => resolve(texture),
+                        undefined,
+                        () => tryFallbacks(index + 1)
+                    );
+                }
+            });
         }
         
         // Update loading progress
