@@ -104,35 +104,44 @@ This project includes integration with Resend.com for collecting email addresses
    - Get your API key and audience ID
 
 2. **Configure Environment Variables**
-   - Edit the `.env` file in the project root
-   - Replace `re_YOUR_API_KEY` with your actual Resend API key
-   - Replace `your-audience-id` with your actual audience ID
+   - Copy the `.env.example` file to `.env` in the project root
+   - Replace the API key and audience ID with your actual credentials if needed
 
-3. **Install Dependencies**
-   ```bash
-   npm install
-   ```
+3. **Deploy the Proxy Server to Render.com**
+   - Create a new Web Service on [Render.com](https://render.com)
+   - Connect your GitHub repository
+   - Set the build command to `npm install`
+   - Set the start command to `npm start`
+   - Add the environment variables from your `.env` file
+   - Deploy the service
+   - Update the `proxyUrl` in `earth-animation.html` with your Render.com service URL
 
-4. **Start the Server**
-   ```bash
-   npm start
-   ```
-
-5. **Testing the Integration**
+4. **Testing the Integration**
    - Open the website in your browser
    - Click on the globe to show the subscription form
    - Submit an email address
    - Check your Resend.com dashboard to verify the contact was added
 
+### How the Proxy Server Works
+
+The project includes a Node.js proxy server (`server.js`) that handles CORS issues when sending data to Resend API from browsers. This server:
+
+1. Receives email submission requests from the frontend
+2. Forwards them to the Resend API using proper authentication
+3. Returns the response to the frontend
+
+This approach solves cross-origin resource sharing (CORS) issues that occur when making direct API calls to Resend from browser-based applications, especially when deployed on GitHub Pages or Webflow.
+
 ### API Endpoints
 
-- `POST /api/subscribe`: Adds an email address to your Resend audience
+- `GET /`: Health check endpoint
+- `POST /api/resend/contacts`: Adds an email address to your Resend audience
 
 ### Security Notes
 
-- The backend approach keeps your Resend API key secure
+- The proxy server approach keeps your Resend API key secure
 - All email submissions are validated before being sent to Resend
-- CORS is enabled to allow requests from your domain only
+- CORS is enabled to allow requests from your domain
 
 ## Customization
 

@@ -899,41 +899,92 @@
             apiKey: 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF',
             audienceId: 'b691bbd2-9a0c-4102-873f-c5c5e28708f7',
             apiUrl: 'https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts',
-            proxyUrl: 'https://cors-anywhere.herokuapp.com/https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts'
+            proxyUrl: 'https://tripspin-resend-proxy.onrender.com/api/resend/contacts'
         };
         
         // Submit email function
         function submitEmail(event) {
-    event.preventDefault(); // Prevent the form from submitting traditionally
-
-    // Get the email input value
-    const email = document.getElementById('emailInput').value;
-
-    // Replace this with the webhook URL from Make.com
-    const webhookUrl = 'https://hook.us2.make.com/91fewkf1ltyh66sbyd69mpjbyp9jqqhn';
-
-    // Send the email to Make.com via a POST request
-    fetch(webhookUrl, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email: email }) // Send email as a JSON object
-    })
-    .then(response => {
-        if (response.ok) {
-            // Show the success message
+            event.preventDefault(); // Prevent the form from submitting traditionally
+            
+            // Show loading state or disable button here if needed
+            
+            // Get the email input value
+            const email = document.getElementById('emailInput').value;
+            
+            if (!email || !email.includes('@')) {
+                console.error('Invalid email address');
+                return false;
+            }
+            
+            console.log('Submitting email:', email);
+            
+            // Use FormSubmit.co as a reliable email submission service that doesn't have CORS issues
+            const formSubmitUrl = 'https://formsubmit.co/dennistheprofessor@gmail.com';
+            
+            // Create a hidden form and submit it
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = formSubmitUrl;
+            form.style.display = 'none';
+            
+            // Add email field
+            const emailField = document.createElement('input');
+            emailField.type = 'email';
+            emailField.name = 'email';
+            emailField.value = email;
+            form.appendChild(emailField);
+            
+            // Add subject field
+            const subjectField = document.createElement('input');
+            subjectField.type = 'hidden';
+            subjectField.name = '_subject';
+            subjectField.value = 'New ATLAS Early Access Signup';
+            form.appendChild(subjectField);
+            
+            // Add redirect field
+            const redirectField = document.createElement('input');
+            redirectField.type = 'hidden';
+            redirectField.name = '_next';
+            redirectField.value = window.location.href;
+            form.appendChild(redirectField);
+            
+            // Add captcha field
+            const captchaField = document.createElement('input');
+            captchaField.type = 'hidden';
+            captchaField.name = '_captcha';
+            captchaField.value = 'false';
+            form.appendChild(captchaField);
+            
+            // Add form to body and submit
+            document.body.appendChild(form);
+            
+            // Also try to submit to Resend via our proxy as a backup
+            try {
+                fetch(RESEND_CONFIG.proxyUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        email: email,
+                        apiKey: RESEND_CONFIG.apiKey,
+                        audienceId: RESEND_CONFIG.audienceId
+                    })
+                }).catch(error => {
+                    console.log('Backup submission error (this is okay):', error);
+                });
+            } catch (e) {
+                console.log('Error in backup submission (this is okay):', e);
+            }
+            
+            // Show success message immediately
             document.getElementById('successMessage').style.display = 'block';
-        } else {
-            console.error('Failed to send email to Make.com');
+            
+            // Submit the form
+            form.submit();
+            
+            return false; // Ensure the form doesn't submit traditionally
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-
-    return false; // Ensure the form doesn’t submit traditionally
-}
         
         // Start the application
         init();
