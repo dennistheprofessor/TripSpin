@@ -475,7 +475,6 @@
             <div class="success-message" id="successMessage">
                 Thank you! We'll notify you when ATLAS is ready.
             </div>
-            <script src="script.js"></script>
         </div>
     </div>
     
@@ -905,112 +904,36 @@
         
         // Submit email function
         function submitEmail(event) {
-            event.preventDefault();
-            const emailInput = document.getElementById('emailInput');
-            const successMessage = document.getElementById('successMessage');
-            
-            // Simple validation
-            if (emailInput.value && emailInput.checkValidity()) {
-                console.log('Submitting email directly to Resend API:', emailInput.value);
-                
-                // Show success message immediately for better UX
-                document.querySelector('.email-form-container').style.display = 'none';
-                successMessage.style.display = 'block';
-                
-                // Prepare the request data
-                const requestData = {
-                    email: emailInput.value,
-                    first_name: '',
-                    last_name: '',
-                    unsubscribed: false
-                };
-                
-                // Try direct API call first
-                tryDirectApiCall(requestData)
-                    .catch(error => {
-                        console.error('Direct API call failed:', error);
-                        // Try with CORS proxy as fallback
-                        return tryCorsProxyCall(requestData);
-                    })
-                    .catch(error => {
-                        console.error('All API attempts failed:', error);
-                        // Log the email so it's not lost
-                        console.log('Please manually add this email to Resend:', emailInput.value);
-                    })
-                    .finally(() => {
-                        // Close form after delay regardless of API success
-                        setTimeout(() => {
-                            const container = document.getElementById('subscriptionContainer');
-                            container.style.opacity = '0';
-                            container.style.visibility = 'hidden';
-                            
-                            // Reset form after it's hidden
-                            setTimeout(() => {
-                                emailInput.value = '';
-                                document.querySelector('.email-form-container').style.display = 'flex';
-                                successMessage.style.display = 'none';
-                            }, 500);
-                        }, 2000);
-                    });
-            }
-            
-            return false;
+    event.preventDefault(); // Prevent the form from submitting traditionally
+
+    // Get the email input value
+    const email = document.getElementById('emailInput').value;
+
+    // Replace this with the webhook URL from Make.com
+    const webhookUrl = 'https://hook.us2.make.com/91fewkf1ltyh66sbyd69mpjbyp9jqqhn';
+
+    // Send the email to Make.com via a POST request
+    fetch(webhookUrl, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email }) // Send email as a JSON object
+    })
+    .then(response => {
+        if (response.ok) {
+            // Show the success message
+            document.getElementById('successMessage').style.display = 'block';
+        } else {
+            console.error('Failed to send email to Make.com');
         }
-        
-        // Try direct API call to Resend
-        function tryDirectApiCall(data) {
-            return fetch(RESEND_CONFIG.apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`,
-                    'Accept': 'application/json',
-                    'Origin': window.location.origin
-                },
-                mode: 'cors',
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                console.log('Direct API response status:', response.status);
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(`Direct API request failed with status ${response.status}: ${text}`);
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Email submitted successfully via direct API:', data);
-                return data;
-            });
-        }
-        
-        // Try API call through CORS proxy
-        function tryCorsProxyCall(data) {
-            console.log('Attempting CORS proxy fallback...');
-            return fetch(RESEND_CONFIG.proxyUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`,
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => {
-                console.log('CORS proxy response status:', response.status);
-                if (!response.ok) {
-                    return response.text().then(text => {
-                        throw new Error(`CORS proxy request failed with status ${response.status}: ${text}`);
-                    });
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Email submitted successfully via CORS proxy:', data);
-                return data;
-            });
-        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    return false; // Ensure the form doesn’t submit traditionally
+}
         
         // Start the application
         init();
