@@ -1,36 +1,61 @@
-// Replace this with YOUR API KEY from Step 2
-const RESEND_API_KEY = 'paste_your_api_key_here';
+// Replace these with YOUR values
+const RESEND_API_KEY = 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF'; // YOUR Resend API Key from resend.com > API Keys
+const AUDIENCE_ID = 'b691bbd2-9a0c-4102-873f-c5c5e28708f7'; // YOUR Audience ID from Step 1
 
-// Listen for the form submit
-document.getElementById('emailForm').addEventListener('submit', async function (e) {
-  e.preventDefault(); // Stops the page from refreshing
+// Function to handle form submission
+function submitEmail(event) {
+  event.preventDefault(); // Stop the page from refreshing
 
-  const email = document.getElementById('userEmail').value; // Grab the email
-  const messageBox = document.getElementById('message'); // Where we’ll show results
+  const emailInput = document.getElementById('emailInput').value; // Grab the email
+  const successMessage = document.getElementById('successMessage'); // Success div
 
-  // Send the email with Resend
-  try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${RESEND_API_KEY}`
-      },
-      body: JSON.stringify({
-        from: 'YourSite <onboarding@resend.dev>', // Change this to your email later
-        to: 'your_email@gmail.com', // YOUR email where you’ll get the collected emails
-        subject: 'New Email Collected, Yo!',
-        html: `<p>Someone gave you this email: ${email}</p>` // Simple message
-      })
+  // Step 1: Send the email to your inbox
+  fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${RESEND_API_KEY}`
+    },
+    body: JSON.stringify({
+      from: 'ATLAS <onboarding@resend.dev>', // Change later if you want a custom domain
+      to: 'dennistheprofessor@gmail.com', // YOUR email where you get notified
+      subject: 'New ATLAS Early Access Signup',
+      html: `<p>New signup for ATLAS Early Access: ${emailInput}</p>`
+    })
+  })
+    .then(response => {
+      if (!response.ok) throw new Error('Email send failed');
+      return response.json();
+    })
+    .then(() => {
+      // Step 2: Add the email to your Resend Audience
+      return fetch('https://api.resend.com/audiences/' + AUDIENCE_ID + '/contacts', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${RESEND_API_KEY}`
+        },
+        body: JSON.stringify({
+          email: emailInput,
+          unsubscribed: false // They’re opted in by default
+        })
+      });
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Audience add failed');
+      // If both succeed, show success
+      document.getElementById('emailForm').style.display = 'none';
+      successMessage.style.display = 'block';
+    })
+    .catch(error => {
+      console.error('Shit hit the fan:', error);
+      alert('Something broke. Check your API key, Audience ID, or internet.');
     });
 
-    if (response.ok) {
-      messageBox.textContent = 'Email sent! Check your inbox, dumbass.';
-    } else {
-      messageBox.textContent = 'Something fucked up. Try again.';
-    }
-  } catch (error) {
-    messageBox.textContent = 'Shit broke. Maybe your internet sucks?';
-    console.error(error);
-  }
+  return false; // Keep the form from submitting the old way
+}
+
+// Handle the close button
+document.getElementById('closeSubscription').addEventListener('click', function () {
+  document.getElementById('subscriptionContainer').style.display = 'none';
 });
