@@ -989,6 +989,9 @@
             }, 500);
         });
         
+        // API configuration - for GitHub Pages, always use the production URL
+        const API_URL = 'https://atlas-earth-backend.onrender.com/api/subscribe';
+        
         // Submit email function
         function submitEmail(event) {
             event.preventDefault();
@@ -1001,7 +1004,22 @@
                 // In production, this would connect to the backend API
                 console.log('Email submitted:', emailInput.value);
                 
-                // Show success message
+                // Try to submit to the backend if available
+                fetch(API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: emailInput.value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => console.log('Success:', data))
+                .catch(error => console.error('Error:', error));
+                
+                // Show success message regardless of backend response
+                // This ensures a good user experience even if the backend is not available
                 document.querySelector('.email-form-container').style.display = 'none';
                 successMessage.style.display = 'block';
                 
@@ -1018,22 +1036,6 @@
                         successMessage.style.display = 'none';
                     }, 500);
                 }, 2000);
-                
-                // In a real implementation, you would use:
-                /*
-                fetch('/api/subscribe', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: emailInput.value
-                    })
-                })
-                .then(response => response.json())
-                .then(data => console.log('Success:', data))
-                .catch(error => console.error('Error:', error));
-                */
             }
             
             return false;
