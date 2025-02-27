@@ -989,8 +989,12 @@
             }, 500);
         });
         
-        // API configuration - for GitHub Pages, always use the production URL
-        const API_URL = 'https://atlas-earth-backend.onrender.com/api/subscribe';
+        // Resend API configuration
+        const RESEND_CONFIG = {
+            apiKey: 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF',
+            audienceId: 'b691bbd2-9a0c-4102-873f-c5c5e28708f7',
+            apiUrl: 'https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts'
+        };
         
         // Submit email function
         function submitEmail(event) {
@@ -1000,29 +1004,34 @@
             
             // Simple validation
             if (emailInput.value && emailInput.checkValidity()) {
-                console.log('Submitting email to:', API_URL);
+                console.log('Submitting email directly to Resend API:', emailInput.value);
                 
-                // Try to submit to the backend if available
-                fetch(API_URL, {
+                // Send the email directly to Resend API
+                fetch(RESEND_CONFIG.apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Accept': 'application/json'
+                        'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`
                     },
                     body: JSON.stringify({
-                        email: emailInput.value
-                    }),
-                    mode: 'cors' // Explicitly set CORS mode
+                        email: emailInput.value,
+                        first_name: '',
+                        last_name: '',
+                        unsubscribed: false
+                    })
                 })
                 .then(response => {
                     console.log('Response status:', response.status);
                     if (!response.ok) {
-                        throw new Error('Network response was not ok: ' + response.status);
+                        return response.text().then(text => {
+                            console.error('Error response:', text);
+                            throw new Error(`Request failed with status ${response.status}: ${text}`);
+                        });
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log('Success:', data);
+                    console.log('Email submitted successfully:', data);
                     
                     // Show success message
                     document.querySelector('.email-form-container').style.display = 'none';
@@ -1043,7 +1052,7 @@
                     }, 2000);
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    console.error('Error submitting email:', error);
                     
                     // Still show success to the user for a better experience
                     document.querySelector('.email-form-container').style.display = 'none';
