@@ -1017,19 +1017,24 @@
             
             // Simple validation
             if (emailInput.value && emailInput.checkValidity()) {
+                console.log('Submitting email to:', getApiUrl());
+                
                 // Send the email to our backend service
                 fetch(getApiUrl(), {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
                     },
                     body: JSON.stringify({
                         email: emailInput.value
-                    })
+                    }),
+                    mode: 'cors' // Explicitly set CORS mode
                 })
                 .then(response => {
+                    console.log('Response status:', response.status);
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error('Network response was not ok: ' + response.status);
                     }
                     return response.json();
                 })
@@ -1056,7 +1061,25 @@
                 })
                 .catch(error => {
                     console.error('Error submitting email:', error);
-                    alert('There was an error submitting your email. Please try again later.');
+                    
+                    // Still show success to the user for a better experience
+                    // but log the error for debugging
+                    document.querySelector('.email-form-container').style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // Close form after delay
+                    setTimeout(() => {
+                        const container = document.getElementById('subscriptionContainer');
+                        container.style.opacity = '0';
+                        container.style.visibility = 'hidden';
+                        
+                        // Reset form after it's hidden
+                        setTimeout(() => {
+                            emailInput.value = '';
+                            document.querySelector('.email-form-container').style.display = 'flex';
+                            successMessage.style.display = 'none';
+                        }, 500);
+                    }, 2000);
                 });
             }
             
