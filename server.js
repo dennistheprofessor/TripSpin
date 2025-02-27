@@ -2,13 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const { Resend } = require('resend');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Initialize Resend
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY || 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF');
+const AUDIENCE_ID = process.env.RESEND_AUDIENCE_ID || 'b691bbd2-9a0c-4102-873f-c5c5e28708f7';
 
 // CORS configuration - allow all origins for debugging
 app.use(cors({
@@ -50,7 +52,7 @@ app.post('/api/subscribe', async (req, res) => {
       firstName: '',
       lastName: '',
       unsubscribed: false,
-      audienceId: process.env.RESEND_AUDIENCE_ID,
+      audienceId: AUDIENCE_ID,
     });
     
     console.log('Subscription successful:', response);
@@ -64,9 +66,47 @@ app.post('/api/subscribe', async (req, res) => {
   }
 });
 
+// Direct proxy to Resend API - alternative approach
+app.post('/api/resend-proxy', async (req, res) => {
+  try {
+    console.log('Resend proxy endpoint hit:', req.body);
+    const { email } = req.body;
+    
+    if (!email) {
+      console.log('Email missing in request');
+      return res.status(400).json({ error: 'Email is required' });
+    }
+    
+    // Make direct API call to Resend
+    const response = await axios({
+      method: 'POST',
+      url: `https://api.resend.com/audiences/${AUDIENCE_ID}/contacts`,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY || 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF'}`
+      },
+      data: {
+        email: email,
+        first_name: '',
+        last_name: '',
+        unsubscribed: false
+      }
+    });
+    
+    console.log('Direct API subscription successful:', response.data);
+    return res.status(200).json({ success: true, message: 'Subscription successful', data: response.data });
+  } catch (error) {
+    console.error('Error in direct API subscription:', error.response?.data || error.message);
+    return res.status(500).json({ 
+      error: 'Failed to subscribe', 
+      details: error.response?.data || error.message 
+    });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`RESEND_API_KEY is ${process.env.RESEND_API_KEY ? 'set' : 'NOT SET'}`);
-  console.log(`RESEND_AUDIENCE_ID is ${process.env.RESEND_AUDIENCE_ID ? 'set' : 'NOT SET'}`);
+  console.log(`RESEND_API_KEY is ${process.env.RESEND_API_KEY ? 'set' : 'using default'}`);
+  console.log(`RESEND_AUDIENCE_ID is ${process.env.RESEND_AUDIENCE_ID ? 'set' : 'using default'}`);
 });

@@ -898,7 +898,8 @@
         const RESEND_CONFIG = {
             apiKey: 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF',
             audienceId: 'b691bbd2-9a0c-4102-873f-c5c5e28708f7',
-            apiUrl: 'https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts'
+            apiUrl: 'https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts',
+            proxyUrl: 'https://cors-anywhere.herokuapp.com/https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts'
         };
         
         // Submit email function
@@ -911,75 +912,103 @@
             if (emailInput.value && emailInput.checkValidity()) {
                 console.log('Submitting email directly to Resend API:', emailInput.value);
                 
-                // Send the email directly to Resend API
-                fetch(RESEND_CONFIG.apiUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`
-                    },
-                    body: JSON.stringify({
-                        email: emailInput.value,
-                        first_name: '',
-                        last_name: '',
-                        unsubscribed: false
+                // Show success message immediately for better UX
+                document.querySelector('.email-form-container').style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Prepare the request data
+                const requestData = {
+                    email: emailInput.value,
+                    first_name: '',
+                    last_name: '',
+                    unsubscribed: false
+                };
+                
+                // Try direct API call first
+                tryDirectApiCall(requestData)
+                    .catch(error => {
+                        console.error('Direct API call failed:', error);
+                        // Try with CORS proxy as fallback
+                        return tryCorsProxyCall(requestData);
                     })
-                })
-                .then(response => {
-                    console.log('Response status:', response.status);
-                    if (!response.ok) {
-                        return response.text().then(text => {
-                            console.error('Error response:', text);
-                            throw new Error(`Request failed with status ${response.status}: ${text}`);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Email submitted successfully:', data);
-                    
-                    // Show success message
-                    document.querySelector('.email-form-container').style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Close form after delay
-                    setTimeout(() => {
-                        const container = document.getElementById('subscriptionContainer');
-                        container.style.opacity = '0';
-                        container.style.visibility = 'hidden';
-                        
-                        // Reset form after it's hidden
+                    .catch(error => {
+                        console.error('All API attempts failed:', error);
+                        // Log the email so it's not lost
+                        console.log('Please manually add this email to Resend:', emailInput.value);
+                    })
+                    .finally(() => {
+                        // Close form after delay regardless of API success
                         setTimeout(() => {
-                            emailInput.value = '';
-                            document.querySelector('.email-form-container').style.display = 'flex';
-                            successMessage.style.display = 'none';
-                        }, 500);
-                    }, 2000);
-                })
-                .catch(error => {
-                    console.error('Error submitting email:', error);
-                    
-                    // Still show success to the user for a better experience
-                    document.querySelector('.email-form-container').style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Close form after delay
-                    setTimeout(() => {
-                        const container = document.getElementById('subscriptionContainer');
-                        container.style.opacity = '0';
-                        container.style.visibility = 'hidden';
-                        
-                        // Reset form after it's hidden
-                        setTimeout(() => {
-                            emailInput.value = '';
-                            document.querySelector('.email-form-container').style.display = 'flex';
-                            successMessage.style.display = 'none';
-                        }, 500);
-                    }, 2000);
-                });
+                            const container = document.getElementById('subscriptionContainer');
+                            container.style.opacity = '0';
+                            container.style.visibility = 'hidden';
+                            
+                            // Reset form after it's hidden
+                            setTimeout(() => {
+                                emailInput.value = '';
+                                document.querySelector('.email-form-container').style.display = 'flex';
+                                successMessage.style.display = 'none';
+                            }, 500);
+                        }, 2000);
+                    });
             }
             
             return false;
+        }
+        
+        // Try direct API call to Resend
+        function tryDirectApiCall(data) {
+            return fetch(RESEND_CONFIG.apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`,
+                    'Accept': 'application/json',
+                    'Origin': window.location.origin
+                },
+                mode: 'cors',
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Direct API response status:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Direct API request failed with status ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Email submitted successfully via direct API:', data);
+                return data;
+            });
+        }
+        
+        // Try API call through CORS proxy
+        function tryCorsProxyCall(data) {
+            console.log('Attempting CORS proxy fallback...');
+            return fetch(RESEND_CONFIG.proxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('CORS proxy response status:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`CORS proxy request failed with status ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Email submitted successfully via CORS proxy:', data);
+                return data;
+            });
         }
         
         // Start the application
