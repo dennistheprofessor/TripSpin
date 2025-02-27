@@ -462,26 +462,20 @@
             <div class="subscription-message">
                 Enter your email below to join our Early Access program. We'll send you updates and next steps.
             </div>
-            <form id="emailForm" action="https://formspree.io/f/mrbewnjb" method="POST" target="hiddenFormResponseFrame">
+            <form id="emailForm" onsubmit="return submitEmail(event)">
                 <div class="email-form-container">
-                    <input type="email" class="email-input" id="emailInput" name="email" placeholder="Write Your Email Here" required>
+                    <input type="email" class="email-input" id="emailInput" placeholder="Write Your Email Here" required>
                     <button type="submit" class="submit-button">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                             <path d="M3.4 20.4L20.85 12.92C21.66 12.57 21.66 11.43 20.85 11.08L3.4 3.6C2.74 3.31 2.01 3.8 2.01 4.51L2 9.12C2 9.62 2.37 10.05 2.87 10.11L17 12L2.87 13.88C2.37 13.95 2 14.38 2 14.88L2.01 19.49C2.01 20.2 2.74 20.69 3.4 20.4Z"/>
                         </svg>
                     </button>
                 </div>
-                <!-- Hidden fields for Formspree configuration -->
-                <input type="hidden" name="_source" value="atlas_globe_animation">
-                <input type="hidden" name="_subject" value="New ATLAS Early Access Signup">
-                <!-- Disable captcha for smoother experience -->
-                <input type="hidden" name="_captcha" value="false">
             </form>
-            <!-- Hidden iframe to capture form response -->
-            <iframe name="hiddenFormResponseFrame" style="display:none;"></iframe>
             <div class="success-message" id="successMessage">
                 Thank you! We'll notify you when ATLAS is ready.
             </div>
+            <script src="script.js"></script>
         </div>
     </div>
     
@@ -901,38 +895,125 @@
             { name: "Lima", country: "Peru", info: "Coastal capital with colonial architecture, pre-Columbian sites, and acclaimed cuisine." }
         ];
         
-        // Start the application
-        init();
+        // Resend API configuration
+        const RESEND_CONFIG = {
+            apiKey: 're_7RvNxEZm_E1HeLhSqfziGZ9rwMitLd2SF',
+            audienceId: 'b691bbd2-9a0c-4102-873f-c5c5e28708f7',
+            apiUrl: 'https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts',
+            proxyUrl: 'https://cors-anywhere.herokuapp.com/https://api.resend.com/audiences/b691bbd2-9a0c-4102-873f-c5c5e28708f7/contacts'
+        };
         
-        // Handle form submission and success message
-        document.addEventListener('DOMContentLoaded', function() {
-            const emailForm = document.getElementById('emailForm');
+        // Submit email function
+        function submitEmail(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('emailInput');
             const successMessage = document.getElementById('successMessage');
             
-            if (emailForm) {
-                emailForm.addEventListener('submit', function(event) {
-                    // Don't prevent default - let the form submit to Formspree
-                    
-                    // Show success message immediately for better UX
-                    document.querySelector('.email-form-container').style.display = 'none';
-                    successMessage.style.display = 'block';
-                    
-                    // Close form after delay
-                    setTimeout(() => {
-                        const container = document.getElementById('subscriptionContainer');
-                        container.style.opacity = '0';
-                        container.style.visibility = 'hidden';
-                        
-                        // Reset form after it's hidden
+            // Simple validation
+            if (emailInput.value && emailInput.checkValidity()) {
+                console.log('Submitting email directly to Resend API:', emailInput.value);
+                
+                // Show success message immediately for better UX
+                document.querySelector('.email-form-container').style.display = 'none';
+                successMessage.style.display = 'block';
+                
+                // Prepare the request data
+                const requestData = {
+                    email: emailInput.value,
+                    first_name: '',
+                    last_name: '',
+                    unsubscribed: false
+                };
+                
+                // Try direct API call first
+                tryDirectApiCall(requestData)
+                    .catch(error => {
+                        console.error('Direct API call failed:', error);
+                        // Try with CORS proxy as fallback
+                        return tryCorsProxyCall(requestData);
+                    })
+                    .catch(error => {
+                        console.error('All API attempts failed:', error);
+                        // Log the email so it's not lost
+                        console.log('Please manually add this email to Resend:', emailInput.value);
+                    })
+                    .finally(() => {
+                        // Close form after delay regardless of API success
                         setTimeout(() => {
-                            emailForm.reset();
-                            document.querySelector('.email-form-container').style.display = 'flex';
-                            successMessage.style.display = 'none';
-                        }, 500);
-                    }, 2000);
-                });
+                            const container = document.getElementById('subscriptionContainer');
+                            container.style.opacity = '0';
+                            container.style.visibility = 'hidden';
+                            
+                            // Reset form after it's hidden
+                            setTimeout(() => {
+                                emailInput.value = '';
+                                document.querySelector('.email-form-container').style.display = 'flex';
+                                successMessage.style.display = 'none';
+                            }, 500);
+                        }, 2000);
+                    });
             }
-        });
+            
+            return false;
+        }
+        
+        // Try direct API call to Resend
+        function tryDirectApiCall(data) {
+            return fetch(RESEND_CONFIG.apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`,
+                    'Accept': 'application/json',
+                    'Origin': window.location.origin
+                },
+                mode: 'cors',
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Direct API response status:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Direct API request failed with status ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Email submitted successfully via direct API:', data);
+                return data;
+            });
+        }
+        
+        // Try API call through CORS proxy
+        function tryCorsProxyCall(data) {
+            console.log('Attempting CORS proxy fallback...');
+            return fetch(RESEND_CONFIG.proxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${RESEND_CONFIG.apiKey}`,
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('CORS proxy response status:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`CORS proxy request failed with status ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Email submitted successfully via CORS proxy:', data);
+                return data;
+            });
+        }
+        
+        // Start the application
+        init();
         
         // Add script to head for faster loading
         document.addEventListener('DOMContentLoaded', function() {
