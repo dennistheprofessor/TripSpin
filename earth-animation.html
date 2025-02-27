@@ -486,7 +486,23 @@
     </div>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="performance-optimizations.js"></script>
     <script>
+        // Preload textures before Three.js starts loading
+        (function preloadTextures() {
+            const texturesToPreload = [
+                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_atmos_2048.jpg',
+                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_normal_2048.jpg',
+                'https://cdn.jsdelivr.net/gh/mrdoob/three.js@r128/examples/textures/planets/earth_clouds_1024.png'
+            ];
+            
+            texturesToPreload.forEach(url => {
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                img.src = url;
+            });
+        })();
+        
         // Main variables
         let scene, camera, renderer;
         let earth, clouds, starField;
@@ -560,8 +576,89 @@
         // Handle texture loading error
         function handleTextureError(error) {
             console.error('Error loading texture', error);
-            document.getElementById('loading').textContent = 
-                'Error loading textures. Please refresh the page.';
+            
+            // Create a fallback canvas texture
+            createFallbackTexture();
+            
+            // Increment the texture loaded count to continue the animation
+            textureLoaded();
+        }
+        
+        // Create a fallback canvas texture when remote textures fail to load
+        function createFallbackTexture() {
+            // Create a canvas element
+            const canvas = document.createElement('canvas');
+            canvas.width = 1024;
+            canvas.height = 512;
+            const ctx = canvas.getContext('2d');
+            
+            // For Earth texture
+            if (texturesLoaded === 0) {
+                // Create a simple gradient for earth
+                const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+                gradient.addColorStop(0, '#1e3b70');  // Deep blue for oceans
+                gradient.addColorStop(0.5, '#3a7bd5'); // Medium blue
+                gradient.addColorStop(0.7, '#00d2ff'); // Light blue for shallow waters
+                gradient.addColorStop(0.71, '#2ecc71'); // Green for land
+                gradient.addColorStop(0.85, '#f1c40f'); // Yellow/tan for deserts
+                gradient.addColorStop(0.95, '#ffffff'); // White for ice caps
+                
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Create a new texture from the canvas
+                const texture = new THREE.CanvasTexture(canvas);
+                earthTexture.image = texture.image;
+                earthTexture.needsUpdate = true;
+            } 
+            // For normal map
+            else if (texturesLoaded === 1) {
+                // Create a simple normal map
+                ctx.fillStyle = '#8080ff'; // Default normal map color (pointing up)
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                bumpMap.image = texture.image;
+                bumpMap.needsUpdate = true;
+            } 
+            // For cloud texture
+            else if (texturesLoaded === 2) {
+                // Create a simple cloud pattern
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                // Add some transparency
+                ctx.globalAlpha = 0.8;
+                
+                // Create cloud-like patterns
+                for (let i = 0; i < 50; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const radius = 20 + Math.random() * 60;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.fill();
+                }
+                
+                // Make the rest transparent
+                ctx.globalCompositeOperation = 'destination-out';
+                for (let i = 0; i < 200; i++) {
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const radius = 5 + Math.random() * 20;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, radius, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+                    ctx.fill();
+                }
+                
+                const texture = new THREE.CanvasTexture(canvas);
+                cloudTexture.image = texture.image;
+                cloudTexture.needsUpdate = true;
+            }
         }
         
         // Called when a texture is loaded

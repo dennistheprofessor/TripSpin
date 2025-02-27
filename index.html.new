@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TripSpin</title>
+    <meta name="description" content="TripSpin is the first of its kind travel concierge. Plan your trip today!">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .seo-content {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+            z-index: 0;
+        }
+        .loading-fallback {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            background-color: #000;
+            z-index: 0;
+        }
+        .loading-fallback h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        .loading-fallback p {
+            font-size: 1.2rem;
+            max-width: 80%;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Visible loading fallback for crawlers and users with slow connections -->
+    <div class="loading-fallback">
+        <h1>TripSpin</h1>
+        <p>Travel isn't changing, but the way you plan your travel will never be the same.</p>
+        <p>Loading 3D Earth Animation...</p>
+    </div>
+    
+    <!-- SEO-friendly content that's visually hidden but available to crawlers -->
+    <div class="seo-content">
+        <h1>TripSpin</h1>
+        <p>TripSpin is the first of its kind travel concierge. Plan your trip today!</p>
+        <p>Explore destinations worldwide with our interactive 3D Earth animation.</p>
+        <p>Join our Early Access program to receive updates and be the first to experience TripSpin.</p>
+    </div>
+    
+    <iframe src="earth-animation.html" title="TripSpin"></iframe>
+</body>
+</html>

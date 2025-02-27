@@ -58,7 +58,46 @@
             max-width: 80%;
             text-align: center;
         }
+        /* Add static version for Google */
+        .static-content {
+            display: none;
+        }
+        /* Only show static content to crawlers */
+        .bot .static-content {
+            display: block;
+            position: relative;
+            z-index: 2;
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .bot iframe {
+            position: absolute;
+            z-index: 0;
+            opacity: 0.1;
+        }
+        .destination-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .destination-item {
+            background: rgba(255,255,255,0.1);
+            padding: 1rem;
+            border-radius: 8px;
+        }
     </style>
+    <script>
+        // Simple bot detection (Google, Bing, etc)
+        (function() {
+            var botPattern = "(googlebot|bingbot|yandex|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator|lighthouse)";
+            var re = new RegExp(botPattern, 'i');
+            if (re.test(navigator.userAgent)) {
+                document.documentElement.className += ' bot';
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Visible loading fallback for crawlers and users with slow connections -->
@@ -76,6 +115,41 @@
         <p>Join our Early Access program to receive updates and be the first to experience TripSpin.</p>
     </div>
     
-    <iframe src="earth-animation.html" title="TripSpin"></iframe>
+    <!-- Static version for Google and other crawlers -->
+    <div class="static-content">
+        <h1>TripSpin - Your Travel Concierge</h1>
+        <p>Travel isn't changing, but the way you plan your travel will never be the same.</p>
+        <p>TripSpin is the first of its kind travel concierge. Plan your trip for a day, a week, a month or a lifetime.</p>
+        
+        <h2>Popular Destinations</h2>
+        <div class="destination-list">
+            <div class="destination-item">
+                <h3>New York</h3>
+                <p>USA</p>
+                <p>The city that never sleeps, known for its iconic skyline and cultural diversity.</p>
+            </div>
+            <div class="destination-item">
+                <h3>London</h3>
+                <p>UK</p>
+                <p>Historic city on the Thames with royal palaces, museums, and vibrant culture.</p>
+            </div>
+            <div class="destination-item">
+                <h3>Tokyo</h3>
+                <p>Japan</p>
+                <p>Ultra-modern metropolis with ancient temples, innovative technology, and amazing food.</p>
+            </div>
+            <div class="destination-item">
+                <h3>Sydney</h3>
+                <p>Australia</p>
+                <p>Harbor city known for its Opera House, beaches, and laid-back lifestyle.</p>
+            </div>
+        </div>
+        
+        <h2>Join Our Early Access Program</h2>
+        <p>Be the first to experience TripSpin and revolutionize the way you plan travel.</p>
+        <p>Email: <a href="mailto:info@tripspin.com">info@tripspin.com</a></p>
+    </div>
+    
+    <iframe src="earth-animation.html" title="TripSpin" loading="lazy"></iframe>
 </body>
 </html>
