@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TripSpin</title>
@@ -88,16 +89,15 @@
             border-radius: 8px;
         }
     </style>
-    <script>
-        // Simple bot detection (Google, Bing, etc)
-        (function() {
-            var botPattern = "(googlebot|bingbot|yandex|baiduspider|twitterbot|facebookexternalhit|rogerbot|linkedinbot|embedly|quora link preview|showyoubot|outbrain|pinterest|slackbot|vkShare|W3C_Validator|lighthouse)";
-            var re = new RegExp(botPattern, 'i');
-            if (re.test(navigator.userAgent)) {
-                document.documentElement.className += ' bot';
-            }
-        })();
-    </script>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-R5GN92CSRJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-R5GN92CSRJ');
+</script>
 </head>
 <body>
     <!-- Visible loading fallback for crawlers and users with slow connections -->
